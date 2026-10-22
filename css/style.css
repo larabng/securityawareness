@@ -322,3 +322,6 @@ img { max-width: 100%; }
 .badge-tile { display:flex; align-items:center; gap:8px; background:#f6f9fc; border:1px solid var(--line);
   border-radius:999px; padding:8px 14px; font-weight:600; font-size:14px; }
 .badge-tile .bt-ic { font-size:20px; }
+
+.keyslot.locked { opacity:.5; }
+.keyslot.locked .kic { filter:grayscale(1) opacity(.6); }

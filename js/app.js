@@ -38,9 +38,11 @@
 
   function toast(msg){ var t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},2200); }
 
-  // Modules playable in this phase, and keys collected among them
+  // One key per module. Keys collected across ALL modules; the company gate
+  // opens once every module's key is collected.
   function availableModules(){ return MODULES.filter(function(m){ return m.available; }); }
-  function keysCollected(){ return availableModules().filter(function(m){ return state.keys[m.id]; }).length; }
+  function keysTotal(){ return MODULES.length; }
+  function keysCollected(){ return MODULES.filter(function(m){ return state.keys[m.id]; }).length; }
 
   /* ---------- Navigation ---------- */
   function show(id){
@@ -61,22 +63,22 @@
 
   /* ---------- Shared gamification widgets ---------- */
   function scoreStripHTML(){
-    var avail = availableModules().length;
     return '<div class="scorestrip">'+
       '<div class="score-chip"><span class="sc-ic">⭐</span><b>'+state.points+'</b> points</div>'+
-      '<div class="score-chip"><span class="sc-ic">🔑</span><b>'+keysCollected()+' / '+avail+'</b> keys</div>'+
+      '<div class="score-chip"><span class="sc-ic">🔑</span><b>'+keysCollected()+' / '+keysTotal()+'</b> keys</div>'+
       '<div class="score-chip"><span class="sc-ic">🔥</span><b>'+state.maxStreak+'</b> best streak</div>'+
     '</div>';
   }
 
   function keyringHTML(){
-    var avail = availableModules();
-    var slots = avail.map(function(m){
+    var slots = MODULES.map(function(m){
       var got = !!state.keys[m.id];
-      return '<div class="keyslot'+(got?" got":"")+'" title="'+m.key.name+'">'+
-        '<span class="kic">'+(got?m.key.icon:"🔓")+'</span><span class="klabel">'+m.key.name+'</span></div>';
+      var locked = !m.available && !got;
+      var icon = got ? m.key.icon : (locked ? "🔒" : "🔓");
+      return '<div class="keyslot'+(got?" got":"")+(locked?" locked":"")+'" title="Module '+m.number+': '+m.key.name+'">'+
+        '<span class="kic">'+icon+'</span><span class="klabel">'+m.key.name+'</span></div>';
     }).join("");
-    return '<div class="keyring"><div class="kr-head">🔑 Your keyring – collect all keys to reach the company gate</div>'+
+    return '<div class="keyring"><div class="kr-head">🔑 Your keyring – one key per module; collect all '+keysTotal()+' to open the company gate</div>'+
       '<div class="kr-slots">'+slots+'</div></div>';
   }
 
@@ -482,9 +484,9 @@
   function renderResult(){
     var sec = $("#result");
     var defPct = Math.round(state.defenseScore / INBOX.length * 100);
-    var availCount = availableModules().length;
+    var totalKeys = keysTotal();
     var keysGot = keysCollected();
-    var gateOpen = availCount>0 && keysGot>=availCount;
+    var gateOpen = keysGot>=totalKeys;
 
     // Team leaderboard: own team uses real points, others are demo values
     var rows = D.config.teams.map(function(t){
@@ -496,7 +498,7 @@
     var top = rows.slice(0, D.config.topTeamsVisible);
 
     // Earned badges (one per completed available module)
-    var badges = availableModules().filter(function(m){return state.missionDone[m.id];})
+    var badges = MODULES.filter(function(m){return state.missionDone[m.id];})
       .map(function(m){ return '<div class="badge-tile"><span class="bt-ic">'+m.badge.icon+'</span><span>'+m.badge.name+'</span></div>'; }).join("");
     if (!badges) badges = '<p class="note">No module badges yet – play a module to earn one.</p>';
 
@@ -508,7 +510,7 @@
       '<div class="company-gate '+(gateOpen?"open":"closed")+'">'+
         '<div class="cg-doors"><div class="cg-door l"></div><div class="cg-door r"></div><div class="cg-icon">'+(gateOpen?"🏢":"🚪")+'</div></div>'+
         '<div class="cg-text"><h3>'+(gateOpen?"Company gate unlocked":"Company gate still closed")+'</h3>'+
-          '<p class="note">You collected <b>'+keysGot+' / '+availCount+'</b> keys. '+(gateOpen?"With every key, you have seen through every weakness in this phase.":"Finish the remaining modules to collect all keys.")+'</p>'+
+          '<p class="note">You collected <b>'+keysGot+' / '+totalKeys+'</b> keys. '+(gateOpen?"With every key, you have seen through every weakness.":"Collect a key from every module to open the gate.")+'</p>'+
           keyringMini()+
         '</div>'+
       '</div>'+
@@ -540,9 +542,10 @@
     };
   }
   function keyringMini(){
-    return '<div class="kr-slots mini">'+availableModules().map(function(m){
+    return '<div class="kr-slots mini">'+MODULES.map(function(m){
       var got=!!state.keys[m.id];
-      return '<span class="keyslot '+(got?"got":"")+'" title="'+m.key.name+'"><span class="kic">'+(got?m.key.icon:"🔓")+'</span></span>';
+      var locked=!m.available && !got;
+      return '<span class="keyslot '+(got?"got":"")+(locked?" locked":"")+'" title="Module '+m.number+': '+m.key.name+'"><span class="kic">'+(got?m.key.icon:(locked?"🔒":"🔓"))+'</span></span>';
     }).join("")+'</div>';
   }
   function statTile(ic,big,label){
@@ -559,7 +562,7 @@
     rows.push(["season", D.config.season]);
     rows.push(["points", state.points]);
     rows.push(["max_streak", state.maxStreak]);
-    rows.push(["keys_collected", keysCollected()+"/"+availableModules().length]);
+    rows.push(["keys_collected", keysCollected()+"/"+keysTotal()]);
     D.surveys.pre.forEach(function(q){ rows.push(["pre_"+q.id, labelOf(q,state.pre[q.id])]); rows.push(["pre_conf_"+q.id, state.preConf[q.id]!=null?state.preConf[q.id]+1:""]); rows.push(["pre_correct_"+q.id, state.pre[q.id]===q.correct?"1":"0"]); });
     D.surveys.post.forEach(function(q){ rows.push(["post_"+q.id, labelOf(q,state.post[q.id])]); rows.push(["post_conf_"+q.id, state.postConf[q.id]!=null?state.postConf[q.id]+1:""]); rows.push(["post_correct_"+q.id, state.post[q.id]===q.correct?"1":"0"]); });
     MODULES.forEach(function(m){ rows.push(["mod_done_"+m.id, state.missionDone[m.id]?"1":"0"]); rows.push(["mod_key_"+m.id, state.keys[m.id]?"1":"0"]); rows.push(["mod_hints_"+m.id, state.hints[m.id]||0]); });
