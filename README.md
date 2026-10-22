@@ -1,64 +1,64 @@
 # Inside the Mind of a Hacker
 
-Prototyp der Schulungswebseite für das WI-Projekt HS26 (Thema 10 – Cybersecurity Clinic, CyrenZH).
-Auftraggeber: ManpowerGroup Schweiz · Team: Michele, Daniele, Lara.
+Prototype of the training website for the WI-Projekt HS26 (Topic 10 – Cybersecurity Clinic, CyrenZH).
+Client: ManpowerGroup Switzerland · Team: Michele, Daniele, Lara.
 
-Gamifizierte Cybersecurity-Awareness-Schulung aus Angreiferperspektive – aber **erkennungs- und
-abwehrorientiert**: Die Teilnehmenden durchschauen den Mechanismus eines Angriffs und üben die
-Schutzhandlung. Es werden bewusst keine echten Werkzeuge, Vorlagen oder Angriffsanleitungen vermittelt
-(Leitplanke aus dem Konzept: „Man lernt den Mechanismus, keine Anleitung").
+A gamified cybersecurity awareness training from the attacker's perspective – but **recognition- and
+defense-oriented**: participants see through the mechanism of an attack and practise the protective
+action. No real tools, templates or attack instructions are taught on purpose
+(guardrail from the concept: "You learn the mechanism, not the instructions").
 
-## Was drin ist
+## What's inside
 
-- **Vorher-Umfrage** (Pflicht) mit Selbsteinschätzung pro Frage
-- **Expertenvideos** pro Modul (Platzhalter, bis die echten Videos vorliegen)
-- **Hacker-Missionen** in dunkler Terminal-Oberfläche + die beiden Balken (Beutewert / Unternehmensschaden)
-- **Auflösung** „Was hätte dich gestoppt?" pro Modul
-- **Verteidigungslevel**: Posteingang mit Angriffen und harmlosen Nachrichten
-- **Nachher-Umfrage** + Feedback
-- **Team-Rangliste** (nur Top 3 sichtbar) und persönliche Auswertung
-- **CSV-Export** aller Antworten für die Testleitung
+- **Pre-survey** (mandatory) with a self-assessment per question
+- **Expert videos** per module (placeholders until the real videos are available)
+- **Hacker missions** in a dark terminal interface + the two meters (loot value / company damage)
+- **Reveal** "What would have stopped you?" per module
+- **Defense level**: an inbox with attacks and harmless messages
+- **Post-survey** + feedback
+- **Team leaderboard** (only top 3 visible) and a personal evaluation
+- **CSV export** of all answers for the test facilitator
 
-Für die Testphase freigeschaltet: **Modul 1 (Phishing)** und **Modul 3 (CEO-Fraud)**.
+Unlocked for the test phase: **Module 1 (Phishing)** and **Module 3 (CEO fraud)**.
 
-## Lokal ansehen
+## View locally
 
-Einfach `index.html` im Browser öffnen – kein Build, keine Installation nötig.
-(Für den Video-Einbettungstest am besten über einen kleinen lokalen Server, z. B. `python -m http.server`.)
+Just open `index.html` in a browser – no build, no installation needed.
+(For testing embedded video, a small local server is best, e.g. `python -m http.server`.)
 
-## Online stellen (GitHub Pages)
+## Publish online (GitHub Pages)
 
-1. Dateien ins Repo `larabng/securityawareness` pushen (Branch `main`).
-2. Auf GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / root**.
-3. Nach ein paar Minuten ist die Seite unter `https://larabng.github.io/securityawareness/` erreichbar.
+1. Push the files to the `larabng/securityawareness` repo (branch `main`).
+2. On GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / root**.
+3. After a few minutes the site is available at `https://larabng.github.io/securityawareness/`.
 
-## Inhalte anpassen
+## Edit content
 
-Alles steht in zwei Dateien, kein Code nötig:
+Everything is in two files, no code needed:
 
-- `js/data.js` – Umfragen (Vorher/Nachher), Feedback, Teams, Firmenname
-- `js/modules.js` – Module (Videos, Missionen, Auflösungen) und der Verteidigungs-Posteingang
+- `js/data.js` – surveys (pre/post), feedback, teams, company name
+- `js/modules.js` – modules (videos, missions, reveals) and the defense inbox
 
-### Video eintragen
-In `js/modules.js` beim jeweiligen Modul `video.url` ausfüllen:
+### Add a video
+In `js/modules.js`, fill in `video.url` for the module:
 - YouTube: `url: "https://www.youtube.com/embed/VIDEO_ID"`
-- eigene Datei: Video z. B. nach `media/modul1.mp4` legen und `url: "media/modul1.mp4"`
+- own file: put the video e.g. at `media/modul1.mp4` and set `url: "media/modul1.mp4"`
 
-### Modul freischalten
-Beim Modul `available: true` setzen.
+### Unlock a module
+Set `available: true` on the module.
 
-## Struktur
+## Structure
 
 ```
-index.html          Grundgerüst + Abschnitte
-css/style.css       Design in ManpowerGroup-Farben
-js/data.js          Umfragen & Konfiguration
-js/modules.js       Module & Verteidigungslevel
-js/app.js           Ablauflogik (Vanilla JS)
+index.html          Skeleton + sections
+css/style.css       Design in ManpowerGroup colours
+js/data.js          Surveys & configuration
+js/modules.js       Modules & defense level
+js/app.js           Flow logic (vanilla JS)
 ```
 
-## Hinweise
+## Notes
 
-- Firma und alle Daten sind **fiktiv** (TalentBridge AG).
-- Der Fortschritt wird nur im Browser (sessionStorage) gehalten; die Auswertung läuft über den CSV-Export.
-- Die Balkenwerte sind fiktiv und veranschaulichen nur die Grössenordnung.
+- The company and all data are **fictional** (TalentBridge Ltd).
+- Progress is kept only in the browser (sessionStorage); evaluation runs via the CSV export.
+- The meter values are fictional and only illustrate the order of magnitude.

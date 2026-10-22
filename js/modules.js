@@ -1,134 +1,134 @@
 /* =========================================================================
-   Module – Expertenvideo, Hacker-Mission (erkennungsorientiert), Auflösung
+   Modules – expert video, hacker mission (recognition-oriented), reveal
    -------------------------------------------------------------------------
-   Jede Mission ist ein Verständnis-Spiel: Die Teilnehmenden versetzen sich
-   in die Angreiferperspektive, indem sie EINSCHÄTZEN, welcher Baustein einen
-   Angriff wirksam macht – und sehen danach sofort die Schutzhandlung.
-   Es werden keine echten Werkzeuge, Vorlagen oder Schritt-für-Schritt-
-   Anleitungen vermittelt. Fiktive Firma: TalentBridge AG.
+   Each mission is a comprehension game: participants put themselves in the
+   attacker's shoes by ASSESSING which building block makes an attack
+   effective – and then immediately see the protective action.
+   No real tools, templates or step-by-step instructions are taught.
+   Fictional company: TalentBridge Ltd.
 
-   video.url: leer lassen, bis das Expertenvideo vorliegt. Dann YouTube-Link
-   (z. B. https://www.youtube.com/embed/XXXX) oder Pfad zu einer .mp4 eintragen.
-   available: true = in der Testphase spielbar (laut Konzept Module 1 und 3).
+   video.url: leave empty until the expert video is available. Then enter a
+   YouTube link (e.g. https://www.youtube.com/embed/XXXX) or a path to an .mp4.
+   available: true = playable in the test phase (per concept, modules 1 and 3).
    ========================================================================= */
 
 window.MODULES = [
   {
-    id: "m1", number: 1, title: "Phishing und Kontoübernahme", icon: "✉️", available: true,
-    loot: "Zugangsdaten zum Postfach", lootLevel: 5,
-    why: "Häufigster Einstieg. Bei rund 60 % der Datenpannen ist der Mensch beteiligt.",
+    id: "m1", number: 1, title: "Phishing and account takeover", icon: "✉️", available: true,
+    loot: "Mailbox login credentials", lootLevel: 5,
+    why: "The most common entry point. Humans are involved in around 60% of data breaches.",
     video: {
-      expert: "IT-Security", duration: "ca. 1 Min.", url: "media/modul1_phishing.mp4",
-      summary: "Die Fachperson erklärt, warum Phishing funktioniert und woran man es erkennt.",
+      expert: "IT Security", duration: "approx. 13 min", url: "media/modul1_phishing.mp4",
+      summary: "The expert explains why phishing works and how to recognise it.",
       points: [
-        ["Was will der Angriff?", "An Zugangsdaten für Postfach oder Bewerberportal kommen – und damit an CVs, Ausweise und interne Mails."],
-        ["Welche Schwachstelle?", "Vertrauter Kontext und Routine: Recruiter erhalten täglich Portal-Benachrichtigungen."],
-        ["Warum wirkt die Täuschung?", "Autorität, Zeitdruck und ein bekanntes Logo senken die Aufmerksamkeit."],
-        ["Wer ist betroffen?", "Bewerber:innen, Kund:innen und die ganze Firma, wenn im Namen weiterverschickt wird."],
-        ["Was stoppt den Angriff?", "Portale nur über Lesezeichen öffnen, Absender genau prüfen, MFA nutzen, Verdacht melden."]
+        ["What does the attack want?", "To obtain login credentials for the mailbox or applicant portal – and with them CVs, ID documents and internal emails."],
+        ["Which weakness?", "Familiar context and routine: recruiters receive portal notifications every day."],
+        ["Why does the deception work?", "Authority, time pressure and a familiar logo lower our attention."],
+        ["Who is affected?", "Applicants, clients and the whole company, if messages are forwarded in your name."],
+        ["What stops the attack?", "Open portals only via bookmarks, check the sender carefully, use MFA, report anything suspicious."]
       ]
     },
     mission: {
-      intro: "Versetz dich in die Angreiferin. Schätze bei jedem Schritt ein, welche Wahl einen Phishing-Versuch am gefährlichsten macht. Danach siehst du, woran genau man ihn erkannt hätte.",
-      target: "Postfach einer Recruiterin",
+      intro: "Put yourself in the attacker's shoes. At each step, assess which choice makes a phishing attempt most dangerous. Afterwards you'll see exactly how it could have been recognised.",
+      target: "A recruiter's mailbox",
       steps: [
-        { q: "Welcher Köder erzeugt am meisten Druck?", options: [
-            { t: "«Ihr Konto läuft heute um 17:00 ab»", risk: 3, why: "Künstlicher Zeitdruck ist das klassische Warnsignal – echte Portale sperren nicht mit Minuten-Countdown." },
-            { t: "«Monatlicher Newsletter»", risk: 1, why: "Ohne Handlungsdruck fällt der Köder kaum auf." },
-            { t: "«Bitte um Feedback zur Website»", risk: 1, why: "Kein Druck, kaum Klickwirkung." } ] },
-        { q: "Welches Detail macht den Absender glaubwürdiger – und ist zugleich das Erkennungsmerkmal?", options: [
-            { t: "Eine Adresse, die dem Portal ähnelt, aber nicht exakt stimmt", risk: 3, why: "Fast-identische Absender sind das wichtigste Prüfmerkmal: Adresse immer Zeichen für Zeichen lesen." },
-            { t: "Eine offensichtliche Wegwerf-Adresse", risk: 1, why: "Zu plump – wird sofort erkannt und gemeldet." },
-            { t: "Gar kein Absendername", risk: 1, why: "Wirkt unseriös und wird ignoriert." } ] },
-        { q: "Was erhöht die Trefferquote am stärksten?", options: [
-            { t: "Ein Link auf eine nachgebaute Login-Seite", risk: 3, why: "Darum gilt: nie über Links in Nachrichten anmelden, sondern das Portal selbst öffnen." },
-            { t: "Eine Bitte, zurückzurufen", risk: 2, why: "Ein zweiter Kanal gibt der Zielperson Zeit zum Nachdenken." },
-            { t: "Ein Anhang zum Ausdrucken", risk: 1, why: "Umständlich, geringe Wirkung." } ] }
+        { q: "Which bait creates the most pressure?", options: [
+            { t: "“Your account expires today at 17:00”", risk: 3, why: "Artificial time pressure is the classic warning sign – real portals don't lock you out with a minute countdown." },
+            { t: "“Monthly newsletter”", risk: 1, why: "Without pressure to act, the bait barely lands." },
+            { t: "“Request for feedback on the website”", risk: 1, why: "No pressure, little click impact." } ] },
+        { q: "Which detail makes the sender more credible – and is at the same time the giveaway?", options: [
+            { t: "An address that resembles the portal's but isn't exactly right", risk: 3, why: "Near-identical senders are the key thing to check: always read the address character by character." },
+            { t: "An obvious throwaway address", risk: 1, why: "Too crude – recognised and reported straight away." },
+            { t: "No sender name at all", risk: 1, why: "Looks dubious and gets ignored." } ] },
+        { q: "What raises the success rate the most?", options: [
+            { t: "A link to a cloned login page", risk: 3, why: "That's why the rule is: never sign in via links in messages – open the portal yourself." },
+            { t: "A request to call back", risk: 2, why: "A second channel gives the target time to think." },
+            { t: "An attachment to print out", risk: 1, why: "Cumbersome, low impact." } ] }
       ]
     },
     reveal: {
-      question: "Was hätte diesen Angriff gestoppt?",
-      answer: "Das Portal über das eigene Lesezeichen öffnen statt über den Link, die Absenderadresse Zeichen für Zeichen prüfen und bei Zeitdruck misstrauisch werden. MFA hätte gestohlene Passwörter zusätzlich entwertet.",
-      stops: ["Zeitdruck → innehalten statt sofort klicken", "Fast-echter Absender → Adresse genau lesen", "Link zur Login-Seite → Portal selbst öffnen, nicht über den Link"]
+      question: "What would have stopped this attack?",
+      answer: "Opening the portal via your own bookmark instead of the link, checking the sender address character by character, and becoming suspicious under time pressure. MFA would also have devalued any stolen passwords.",
+      stops: ["Time pressure → pause instead of clicking right away", "Almost-genuine sender → read the address carefully", "Link to the login page → open the portal yourself, not via the link"]
     }
   },
 
   {
-    id: "m2", number: 2, title: "Schadsoftware in Bewerbungsunterlagen", icon: "📎", available: false,
-    loot: "Fernzugriff auf HR-Rechner", lootLevel: 5,
-    why: "Recruiter müssen Anhänge von Unbekannten öffnen. 2025 gezielte Kampagnen gegen HR.",
-    video: { expert: "IT-Security", duration: "3–5 min", url: "", summary: "Wie präparierte Dateien wirken und wie man Anhänge sicher behandelt.", points: [] },
-    mission: { intro: "In der Testphase noch nicht freigeschaltet.", target: "", steps: [] },
+    id: "m2", number: 2, title: "Malware in application documents", icon: "📎", available: false,
+    loot: "Remote access to the HR computer", lootLevel: 5,
+    why: "Recruiters have to open attachments from strangers. Targeted campaigns against HR in 2025.",
+    video: { expert: "IT Security", duration: "3–5 min", url: "", summary: "How booby-trapped files work and how to handle attachments safely.", points: [] },
+    mission: { intro: "Not yet unlocked in the test phase.", target: "", steps: [] },
     reveal: { question: "", answer: "", stops: [] }
   },
 
   {
-    id: "m3", number: 3, title: "CEO-Fraud", icon: "👔", available: true,
-    loot: "Kandidatenprofile, ggf. Zahlung", lootLevel: 4,
-    why: "In der Schweiz stark steigend: 970 Meldungen beim BACS 2025 (2023: 484).",
+    id: "m3", number: 3, title: "CEO fraud", icon: "👔", available: true,
+    loot: "Candidate profiles, possibly payment", lootLevel: 4,
+    why: "Rising sharply in Switzerland: 970 reports to the NCSC in 2025 (2023: 484).",
     video: {
-      expert: "Finanzen", duration: "3–5 min", url: "",
-      summary: "Warum eine Anweisung «von oben» so schwer zu hinterfragen ist – und wie der Freigabeprozess schützt.",
+      expert: "Finance", duration: "3–5 min", url: "",
+      summary: "Why an instruction “from the top” is so hard to question – and how the approval process protects you.",
       points: [
-        ["Was will der Angriff?", "Eine dringende Herausgabe von Daten oder eine Zahlung auslösen, bevor jemand nachfragt."],
-        ["Welche Schwachstelle?", "Hierarchie und Hilfsbereitschaft: Einer Chef-Anweisung widerspricht man ungern."],
-        ["Warum wirkt die Täuschung?", "Echter Name, Vertraulichkeit, Zeitdruck und oft ein Anruf, der die Mail «bestätigt»."],
-        ["Wer ist betroffen?", "Kandidat:innen (Datenabfluss) und die Firma (direkter Finanzschaden)."],
-        ["Was stoppt den Angriff?", "Rückfrage über einen bekannten zweiten Kanal und der Vier-Augen-Freigabeprozess."]
+        ["What does the attack want?", "To trigger an urgent release of data or a payment before anyone asks questions."],
+        ["Which weakness?", "Hierarchy and helpfulness: we're reluctant to contradict an instruction from the boss."],
+        ["Why does the deception work?", "A genuine name, confidentiality, time pressure and often a call that “confirms” the email."],
+        ["Who is affected?", "Candidates (data loss) and the company (direct financial damage)."],
+        ["What stops the attack?", "Checking back through a known second channel and the four-eyes approval process."]
       ]
     },
     mission: {
-      intro: "Versetz dich in den Angreifer. Schätze ein, welche Wahl eine gefälschte Chef-Anweisung am überzeugendsten macht. Danach siehst du, was sie entlarvt hätte.",
-      target: "Kandidatenprofile für «Kunde X»",
+      intro: "Put yourself in the attacker's shoes. Assess which choice makes a forged boss instruction most convincing. Afterwards you'll see what would have exposed it.",
+      target: "Candidate profiles for “Client X”",
       steps: [
-        { q: "Welche Rolle gibt der Anfrage am meisten Gewicht?", options: [
-            { t: "CEO / Geschäftsleitung", risk: 3, why: "Autorität ist der Hebel – genau deshalb gilt sie als Warnsignal, nicht als Freifahrtschein." },
-            { t: "Eine Kollegin aus dem Nachbarteam", risk: 1, why: "Wenig Druck, leicht zu hinterfragen." },
-            { t: "Ein externer Bewerber", risk: 1, why: "Hat keine Weisungsbefugnis." } ] },
-        { q: "Welcher Zusatz erhöht den Druck am stärksten?", options: [
-            { t: "«Vertraulich» plus knappe Frist", risk: 3, why: "Vertraulichkeit soll die normale Rückfrage verhindern – ein typisches Muster." },
-            { t: "Eine freundliche Begrüssung", risk: 1, why: "Erhöht den Druck nicht." },
-            { t: "Ein Hinweis auf die Kaffeepause", risk: 1, why: "Irrelevant." } ] },
-        { q: "Was lässt die Anfrage am echtesten wirken?", options: [
-            { t: "Ein Anruf, der die Mail «bestätigt»", risk: 3, why: "Zwei Kanäle vom selben Angreifer sind keine echte Bestätigung – darum muss die Rückfrage über einen unabhängig bekannten Kanal laufen." },
-            { t: "Ein langer Textbaustein", risk: 1, why: "Macht eher misstrauisch." },
-            { t: "Mehrere Rechtschreibfehler", risk: 1, why: "Senken die Glaubwürdigkeit." } ] }
+        { q: "Which role gives the request the most weight?", options: [
+            { t: "CEO / executive management", risk: 3, why: "Authority is the lever – which is exactly why it counts as a warning sign, not a free pass." },
+            { t: "A colleague from the neighbouring team", risk: 1, why: "Little pressure, easy to question." },
+            { t: "An external applicant", risk: 1, why: "Has no authority to give instructions." } ] },
+        { q: "Which addition raises the pressure the most?", options: [
+            { t: "“Confidential” plus a tight deadline", risk: 3, why: "Confidentiality is meant to prevent the normal check-back – a typical pattern." },
+            { t: "A friendly greeting", risk: 1, why: "Does not raise the pressure." },
+            { t: "A mention of the coffee break", risk: 1, why: "Irrelevant." } ] },
+        { q: "What makes the request seem most genuine?", options: [
+            { t: "A call that “confirms” the email", risk: 3, why: "Two channels from the same attacker are not a genuine confirmation – that's why the check-back must go through an independently known channel." },
+            { t: "A long block of boilerplate text", risk: 1, why: "More likely to raise suspicion." },
+            { t: "Several spelling mistakes", risk: 1, why: "Lower the credibility." } ] }
       ]
     },
     reveal: {
-      question: "Was hätte diesen Angriff gestoppt?",
-      answer: "Eine Rückfrage über einen unabhängig bekannten Kanal (Durchwahl aus dem Verzeichnis, persönlich) und das Einhalten des Freigabeprozesses. Dringlichkeit und Vertraulichkeit sind Warnsignale, keine Gründe, den Prozess zu überspringen.",
-      stops: ["Autorität → Weisung trotzdem über zweiten Kanal prüfen", "Zeitdruck + «vertraulich» → bewusst innehalten", "Bestätigungsanruf → nur ein unabhängiger Kanal zählt"]
+      question: "What would have stopped this attack?",
+      answer: "Checking back through an independently known channel (a direct line from the directory, or in person) and following the approval process. Urgency and confidentiality are warning signs, not reasons to skip the process.",
+      stops: ["Authority → still verify the instruction via a second channel", "Time pressure + “confidential” → deliberately pause", "Confirmation call → only an independent channel counts"]
     }
   },
 
   {
-    id: "m4", number: 4, title: "Fake-Kandidaten und Deepfakes", icon: "🎭", available: false,
-    loot: "Zugang zu Kundensystemen, Lohn", lootLevel: 4,
-    why: "Wächst stark. Personaldienstleister vermitteln an Kunden und haften mit.",
-    video: { expert: "HR / Recruiting", duration: "3–5 min", url: "", summary: "Woran man gefälschte Profile und Deepfake-Interviews erkennt.", points: [] },
-    mission: { intro: "In der Testphase noch nicht freigeschaltet.", target: "", steps: [] },
+    id: "m4", number: 4, title: "Fake candidates and deepfakes", icon: "🎭", available: false,
+    loot: "Access to client systems, salary", lootLevel: 4,
+    why: "Growing fast. Staffing agencies place people with clients and share the liability.",
+    video: { expert: "HR / Recruiting", duration: "3–5 min", url: "", summary: "How to spot forged profiles and deepfake interviews.", points: [] },
+    mission: { intro: "Not yet unlocked in the test phase.", target: "", steps: [] },
     reveal: { question: "", answer: "", stops: [] }
   },
 
   {
-    id: "m5", number: 5, title: "Ransomware und Datenabfluss", icon: "🔒", available: false,
-    loot: "Gesamter Datenbestand, Lösegeld", lootLevel: 5,
-    why: "Grösster Schaden. ManpowerGroup-Franchise Lansing 2025 mit rund 145'000 Betroffenen.",
-    video: { expert: "Datenschutz", duration: "3–5 min", url: "", summary: "Wie Ransomware ins Haus kommt und was im Ernstfall zu tun ist.", points: [] },
-    mission: { intro: "In der Testphase noch nicht freigeschaltet. Baut auf den anderen Modulen auf und zeigt die ganze Angriffskette.", target: "", steps: [] },
+    id: "m5", number: 5, title: "Ransomware and data exfiltration", icon: "🔒", available: false,
+    loot: "The entire data set, ransom", lootLevel: 5,
+    why: "The greatest damage. ManpowerGroup franchise Lansing in 2025 with around 145,000 people affected.",
+    video: { expert: "Data Protection", duration: "3–5 min", url: "", summary: "How ransomware gets in and what to do in an emergency.", points: [] },
+    mission: { intro: "Not yet unlocked in the test phase. Builds on the other modules and shows the whole attack chain.", target: "", steps: [] },
     reveal: { question: "", answer: "", stops: [] }
   }
 ];
 
-/* ---------- Verteidigungslevel (Posteingang) ----------
-   Gemischte Nachrichten: Angriffe + harmlose echte Nachrichten.
-   action: richtige Handlung. attack: true/false.  */
+/* ---------- Defense level (inbox) ----------
+   Mixed messages: attacks + harmless, genuine messages.
+   action: the correct action. attack: true/false. */
 window.DEFENSE_INBOX = [
-  { id: "d1", from: "Bewerberportal-Service", subject: "Konto läuft in 2 Stunden ab – jetzt anmelden", preview: "Melden Sie sich sofort über den folgenden Link an, sonst wird Ihr Zugang gelöscht.", attack: true, type: "Phishing", action: "melden", why: "Zeitdruck und Anmeldung über einen Link – Portal stattdessen selbst öffnen und melden." },
-  { id: "d2", from: "Sandra Meier (Kollegin)", subject: "Mittagessen Donnerstag?", preview: "Hast du Donnerstag Zeit für einen schnellen Lunch?", attack: false, type: "Harmlos", action: "bearbeiten", why: "Normale interne Nachricht ohne Risiko." },
-  { id: "d3", from: "M. Keller, CEO", subject: "VERTRAULICH – dringend Kandidatenprofile", preview: "Brauche in 20 Min alle Profile für Kunde X. Bitte nicht mit dem Team besprechen.", attack: true, type: "CEO-Fraud", action: "zurückfragen", why: "Autorität + Druck + Geheimhaltung: über bekannten zweiten Kanal prüfen." },
-  { id: "d4", from: "Lukas B. (Bewerber)", subject: "Lebenslauf_final.zip", preview: "Mein CV liegt im Anhang als ZIP, Passwort: 1234. Bitte rasch anschauen.", attack: true, type: "Präparierte Bewerbung", action: "melden", why: "Passwort-ZIP von unbekannt umgeht den Virenscanner: über Bewerberportal einreichen lassen." },
-  { id: "d5", from: "Kunde Zattoo AG", subject: "Rechnung wie besprochen", preview: "Anbei die gestern telefonisch vereinbarte Rechnung.", attack: false, type: "Harmlos", action: "bearbeiten", why: "Erwarteter Kontext über die gewohnte Adresse – normal bearbeiten." },
-  { id: "d6", from: "IT-Support (extern)", subject: "Bitte Code durchgeben", preview: "Zur Wartung brauchen wir Ihren SMS-Anmeldecode. Bitte antworten.", attack: true, type: "Phishing / Vishing", action: "melden", why: "Echter Support fragt nie nach deinem Anmeldecode." }
+  { id: "d1", from: "Applicant Portal Service", subject: "Account expires in 2 hours – sign in now", preview: "Sign in immediately via the following link, or your access will be deleted.", attack: true, type: "Phishing", action: "report", why: "Time pressure and signing in via a link – open the portal yourself instead and report it." },
+  { id: "d2", from: "Sandra Meier (colleague)", subject: "Lunch on Thursday?", preview: "Do you have time for a quick lunch on Thursday?", attack: false, type: "Harmless", action: "process", why: "A normal internal message with no risk." },
+  { id: "d3", from: "M. Keller, CEO", subject: "CONFIDENTIAL – urgent candidate profiles", preview: "I need all profiles for Client X in 20 min. Please don't discuss with the team.", attack: true, type: "CEO fraud", action: "verify", why: "Authority + pressure + secrecy: verify through a known second channel." },
+  { id: "d4", from: "Lukas B. (applicant)", subject: "CV_final.zip", preview: "My CV is attached as a ZIP, password: 1234. Please take a quick look.", attack: true, type: "Malicious application", action: "report", why: "A password-protected ZIP from an unknown sender bypasses the virus scanner: have it submitted via the applicant portal." },
+  { id: "d5", from: "Client Zattoo Ltd", subject: "Invoice as discussed", preview: "Please find attached the invoice we agreed on by phone yesterday.", attack: false, type: "Harmless", action: "process", why: "Expected context from the usual address – process as normal." },
+  { id: "d6", from: "IT Support (external)", subject: "Please share your code", preview: "For maintenance we need your SMS login code. Please reply.", attack: true, type: "Phishing / vishing", action: "report", why: "Genuine support never asks for your login code." }
 ];
