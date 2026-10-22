@@ -18,14 +18,14 @@ window.MODULES = [
     loot: "Mailbox login credentials", lootLevel: 5,
     why: "The most common entry point. Humans are involved in around 60% of data breaches.",
     video: {
-      expert: "IT Security", duration: "approx. 13 min", url: "media/modul1_phishing.mp4",
-      summary: "The expert explains why phishing works and how to recognise it.",
+      expert: "IT Security", duration: "approx. 10 min", url: "media/modul1_phishing.mp4",
+      summary: "An animated film that follows recruiter Maya and a security coach through how a phishing attack really works – and the simple habit that stops it.",
       points: [
-        ["What does the attack want?", "To obtain login credentials for the mailbox or applicant portal – and with them CVs, ID documents and internal emails."],
-        ["Which weakness?", "Familiar context and routine: recruiters receive portal notifications every day."],
-        ["Why does the deception work?", "Authority, time pressure and a familiar logo lower our attention."],
-        ["Who is affected?", "Applicants, clients and the whole company, if messages are forwarded in your name."],
-        ["What stops the attack?", "Open portals only via bookmarks, check the sender carefully, use MFA, report anything suspicious."]
+        ["Why a work account is a target", "Your mailbox is a door to everything connected to it – candidates, clients, colleagues and documents."],
+        ["What the attacker is looking for", "Login access that looks legitimate, and the data and reach that come with it."],
+        ["Why phishing works on careful people", "A message feels familiar or urgent, not obviously fake – that is what lowers your guard."],
+        ["The warning signs to check", "Is it expected? Does the request fit? Any unusual step, link, QR code or attachment? Judge by context, not by how polished it looks."],
+        ["The habit that stops it", "Pause, check the context, and verify through a known, independent channel – never the details in the message. Already clicked? Report it promptly."]
       ]
     },
     mission: {
