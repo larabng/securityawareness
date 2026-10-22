@@ -7,14 +7,23 @@
    No real tools, templates or step-by-step instructions are taught.
    Fictional company: TalentBridge Ltd.
 
-   video.url: leave empty until the expert video is available. Then enter a
-   YouTube link (e.g. https://www.youtube.com/embed/XXXX) or a path to an .mp4.
+   Gamification fields:
+   - difficulty: "easy" | "medium" | "hard"  → weights the points earned
+   - key:   collectible reward per module; all keys open the "company gate"
+   - badge: themed achievement shown on completion
+   - mission.steps[].hint: optional nudge (costs points), never the answer
+   - requiresKeys: module stays locked until that many keys are collected
+
+   video.url: leave empty until the expert video is available.
    available: true = playable in the test phase (per concept, modules 1 and 3).
    ========================================================================= */
 
 window.MODULES = [
   {
     id: "m1", number: 1, title: "Phishing and account takeover", icon: "✉️", available: true,
+    difficulty: "easy",
+    key:   { name: "Mailbox key", icon: "🔑" },
+    badge: { name: "Phishing Spotter", icon: "🎯" },
     loot: "Mailbox login credentials", lootLevel: 5,
     why: "The most common entry point. Humans are involved in around 60% of data breaches.",
     video: {
@@ -32,15 +41,15 @@ window.MODULES = [
       intro: "Put yourself in the attacker's shoes. At each step, assess which choice makes a phishing attempt most dangerous. Afterwards you'll see exactly how it could have been recognised.",
       target: "A recruiter's mailbox",
       steps: [
-        { q: "Which bait creates the most pressure?", options: [
+        { q: "Which bait creates the most pressure?", hint: "Think about which message forces a quick reaction.", options: [
             { t: "“Your account expires today at 17:00”", risk: 3, why: "Artificial time pressure is the classic warning sign – real portals don't lock you out with a minute countdown." },
             { t: "“Monthly newsletter”", risk: 1, why: "Without pressure to act, the bait barely lands." },
             { t: "“Request for feedback on the website”", risk: 1, why: "No pressure, little click impact." } ] },
-        { q: "Which detail makes the sender more credible – and is at the same time the giveaway?", options: [
+        { q: "Which detail makes the sender more credible – and is at the same time the giveaway?", hint: "Look closely at the address itself, not the display name.", options: [
             { t: "An address that resembles the portal's but isn't exactly right", risk: 3, why: "Near-identical senders are the key thing to check: always read the address character by character." },
             { t: "An obvious throwaway address", risk: 1, why: "Too crude – recognised and reported straight away." },
             { t: "No sender name at all", risk: 1, why: "Looks dubious and gets ignored." } ] },
-        { q: "What raises the success rate the most?", options: [
+        { q: "What raises the success rate the most?", hint: "Where does the victim end up typing their password?", options: [
             { t: "A link to a cloned login page", risk: 3, why: "That's why the rule is: never sign in via links in messages – open the portal yourself." },
             { t: "A request to call back", risk: 2, why: "A second channel gives the target time to think." },
             { t: "An attachment to print out", risk: 1, why: "Cumbersome, low impact." } ] }
@@ -55,6 +64,9 @@ window.MODULES = [
 
   {
     id: "m2", number: 2, title: "Malware in application documents", icon: "📎", available: false,
+    difficulty: "medium",
+    key:   { name: "HR workstation key", icon: "🔑" },
+    badge: { name: "Attachment Guard", icon: "📎" },
     loot: "Remote access to the HR computer", lootLevel: 5,
     why: "Recruiters have to open attachments from strangers. Targeted campaigns against HR in 2025.",
     video: { expert: "IT Security", duration: "3–5 min", url: "", summary: "How booby-trapped files work and how to handle attachments safely.", points: [] },
@@ -64,6 +76,9 @@ window.MODULES = [
 
   {
     id: "m3", number: 3, title: "CEO fraud", icon: "👔", available: true,
+    difficulty: "medium",
+    key:   { name: "Executive-floor key", icon: "🔑" },
+    badge: { name: "CEO-Fraud Shield", icon: "🛡️" },
     loot: "Candidate profiles, possibly payment", lootLevel: 4,
     why: "Rising sharply in Switzerland: 970 reports to the NCSC in 2025 (2023: 484).",
     video: {
@@ -81,15 +96,15 @@ window.MODULES = [
       intro: "Put yourself in the attacker's shoes. Assess which choice makes a forged boss instruction most convincing. Afterwards you'll see what would have exposed it.",
       target: "Candidate profiles for “Client X”",
       steps: [
-        { q: "Which role gives the request the most weight?", options: [
+        { q: "Which role gives the request the most weight?", hint: "Who is hardest to say no to?", options: [
             { t: "CEO / executive management", risk: 3, why: "Authority is the lever – which is exactly why it counts as a warning sign, not a free pass." },
             { t: "A colleague from the neighbouring team", risk: 1, why: "Little pressure, easy to question." },
             { t: "An external applicant", risk: 1, why: "Has no authority to give instructions." } ] },
-        { q: "Which addition raises the pressure the most?", options: [
+        { q: "Which addition raises the pressure the most?", hint: "What discourages you from checking with anyone else?", options: [
             { t: "“Confidential” plus a tight deadline", risk: 3, why: "Confidentiality is meant to prevent the normal check-back – a typical pattern." },
             { t: "A friendly greeting", risk: 1, why: "Does not raise the pressure." },
             { t: "A mention of the coffee break", risk: 1, why: "Irrelevant." } ] },
-        { q: "What makes the request seem most genuine?", options: [
+        { q: "What makes the request seem most genuine?", hint: "A second contact from the same person doesn't prove the first was real.", options: [
             { t: "A call that “confirms” the email", risk: 3, why: "Two channels from the same attacker are not a genuine confirmation – that's why the check-back must go through an independently known channel." },
             { t: "A long block of boilerplate text", risk: 1, why: "More likely to raise suspicion." },
             { t: "Several spelling mistakes", risk: 1, why: "Lower the credibility." } ] }
@@ -104,6 +119,9 @@ window.MODULES = [
 
   {
     id: "m4", number: 4, title: "Fake candidates and deepfakes", icon: "🎭", available: false,
+    difficulty: "medium",
+    key:   { name: "Identity key", icon: "🔑" },
+    badge: { name: "Deepfake Detector", icon: "🎭" },
     loot: "Access to client systems, salary", lootLevel: 4,
     why: "Growing fast. Staffing agencies place people with clients and share the liability.",
     video: { expert: "HR / Recruiting", duration: "3–5 min", url: "", summary: "How to spot forged profiles and deepfake interviews.", points: [] },
@@ -113,6 +131,9 @@ window.MODULES = [
 
   {
     id: "m5", number: 5, title: "Ransomware and data exfiltration", icon: "🔒", available: false,
+    difficulty: "hard", requiresKeys: 4,
+    key:   { name: "Data-centre key", icon: "🔑" },
+    badge: { name: "Ransomware First Responder", icon: "🔒" },
     loot: "The entire data set, ransom", lootLevel: 5,
     why: "The greatest damage. ManpowerGroup franchise Lansing in 2025 with around 145,000 people affected.",
     video: { expert: "Data Protection", duration: "3–5 min", url: "", summary: "How ransomware gets in and what to do in an emergency.", points: [] },

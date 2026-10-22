@@ -14,6 +14,7 @@ window.APP_DATA = {
     title: "Inside the Mind of a Hacker",
     subtitle: "Cybersecurity awareness from the attacker's perspective",
     company: "TalentBridge Ltd (fictional staffing agency)",
+    season: "HS26 · Round 1",
     topTeamsVisible: 3,
     adminPin: "2026",
     teams: ["Team Firewall", "Team Patch", "Team Bitlocker", "Team Captcha", "Team Sandbox", "Team Honeypot"]

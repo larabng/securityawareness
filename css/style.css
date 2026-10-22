@@ -243,3 +243,82 @@ img { max-width: 100%; }
   .nav { width:100%; }
   .section { padding: 28px 0; }
 }
+
+/* =========================================================================
+   Gamification: points, keys + gate, badges, hints, streaks
+   ========================================================================= */
+
+/* Score strip */
+.scorestrip { display:flex; gap:12px; flex-wrap:wrap; margin:14px 0 6px; }
+.score-chip { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
+  border-radius:999px; padding:8px 16px; font-size:14px; box-shadow:var(--shadow); }
+.score-chip .sc-ic { font-size:16px; }
+.score-chip b { color:var(--mp-navy); font-size:16px; }
+
+/* Keyring */
+.keyring { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:16px 18px; box-shadow:var(--shadow); margin:14px 0; }
+.kr-head { font-size:13px; font-weight:700; color:var(--mp-blue); margin-bottom:12px; }
+.kr-slots { display:flex; gap:10px; flex-wrap:wrap; }
+.kr-slots.mini { margin-top:10px; }
+.keyslot { display:flex; align-items:center; gap:8px; border:1px dashed var(--line); border-radius:10px;
+  padding:8px 12px; background:#f6f9fc; color:var(--ink-soft); transition:all .3s; }
+.keyslot .kic { font-size:20px; filter:grayscale(1) opacity(.5); transition:all .3s; }
+.keyslot .klabel { font-size:13px; font-weight:600; }
+.keyslot.got { border-style:solid; border-color:var(--mp-orange); background:#fff6ec; color:var(--mp-navy);
+  box-shadow:0 2px 10px rgba(238,138,29,.2); }
+.keyslot.got .kic { filter:none; animation:keypop .5s ease; }
+.kr-slots.mini .keyslot { padding:8px; }
+.kr-slots.mini .keyslot .kic { font-size:22px; }
+@keyframes keypop { 0%{transform:scale(.4) rotate(-20deg);} 70%{transform:scale(1.25) rotate(8deg);} 100%{transform:none;} }
+
+/* Extra badges on module cards */
+.badge.diff.easy   { background:#e7f5ec; color:#1f7a3d; }
+.badge.diff.medium { background:#fff1e0; color:#b96708; }
+.badge.diff.hard   { background:#fdeceb; color:#b63b37; }
+.badge.key   { background:#eaf2fb; color:#0b4a86; }
+.badge.award { background:#f0ead9; color:#8a6d1b; }
+
+/* Hint */
+.hint-btn { background:transparent; border:1px dashed #2f5a85; color:#8fb4da;
+  border-radius:9px; padding:8px 13px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;
+  margin:2px 0 10px; }
+.hint-btn:hover { border-color:var(--mp-orange); color:#ffd9a8; }
+.hint-btn:disabled { opacity:.55; cursor:not-allowed; }
+.hint-text { background:#0d2d50; border-left:3px solid var(--mp-orange); color:#d6e9ff;
+  padding:10px 12px; border-radius:8px; font-size:14px; margin:0 0 12px; }
+
+/* Reward banner on reveal */
+.reward-banner { background:linear-gradient(90deg,#fff6ec,#eaf4ff); border:1px solid var(--mp-orange);
+  border-radius:var(--radius); padding:14px 18px; font-size:15px; color:var(--mp-navy); margin:4px 0 18px;
+  box-shadow:0 4px 16px rgba(238,138,29,.18); }
+.reward-banner span { font-size:18px; }
+.reward-banner.done { background:#f1f7ff; border-color:var(--line); color:var(--ink-soft); box-shadow:none; }
+
+/* Combo bar (defense) */
+.combo-bar { display:flex; align-items:center; gap:10px; background:var(--mp-navy); color:#fff;
+  border-radius:12px; padding:12px 18px; font-size:15px; margin:14px 0 18px; }
+.combo-bar b { color:var(--mp-orange); }
+
+/* Company gate */
+.company-gate { display:flex; align-items:center; gap:20px; flex-wrap:wrap; border-radius:var(--radius);
+  padding:22px; margin:18px 0; border:1px solid var(--line); box-shadow:var(--shadow);
+  background:linear-gradient(135deg,#0a3a73,var(--mp-navy)); color:#fff; }
+.company-gate.open { background:linear-gradient(135deg,#0b5a9e,#0a3a73); }
+.cg-doors { position:relative; width:120px; height:120px; border-radius:12px; overflow:hidden;
+  background:#06182e; border:2px solid #16456f; flex:0 0 auto; display:grid; place-items:center; }
+.cg-door { position:absolute; top:0; height:100%; width:50%; background:linear-gradient(180deg,#123a63,#0a2440);
+  transition:transform 1s cubic-bezier(.2,.8,.2,1); }
+.cg-door.l { left:0; border-right:1px solid #1d4e7e; }
+.cg-door.r { right:0; border-left:1px solid #1d4e7e; }
+.company-gate.open .cg-door.l { transform:translateX(-100%); }
+.company-gate.open .cg-door.r { transform:translateX(100%); }
+.cg-icon { font-size:46px; z-index:0; }
+.cg-text h3 { color:#fff; }
+.cg-text .note { color:#c9dcf0; }
+
+/* Badge collection */
+.badge-grid { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+.badge-tile { display:flex; align-items:center; gap:8px; background:#f6f9fc; border:1px solid var(--line);
+  border-radius:999px; padding:8px 14px; font-weight:600; font-size:14px; }
+.badge-tile .bt-ic { font-size:20px; }
