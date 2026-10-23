@@ -24,15 +24,13 @@ window.APP_DATA = {
      Pre = cybersecurity survey; post = scenario questions. The solution (correct) is NEVER shown
      to participants – it is only used for evaluation in the export. */
   surveys: {
-    /* ---------- Pre-survey: cybersecurity survey (23 questions) ----------
+    /* ---------- Pre-survey: cybersecurity survey (20 questions, anonymous) ----------
        Question types: text, textarea, single, multi, slider, number,
        matrix (one scale per row), dual (two scales per row).
        "correct" is NEVER shown to participants – only used in the export.
        required: false = optional question (default: required). */
     pre: [
       // A – About you
-      { id: "d1", section: "About you", type: "text", text: "Last name" },
-      { id: "d2", section: "About you", type: "text", text: "First name" },
       { id: "d3", section: "About you", type: "single", text: "Gender",
         options: ["Female", "Male", "Non-binary / diverse", "Prefer not to say"] },
       { id: "d4", section: "About you", type: "single", text: "Age",
@@ -47,8 +45,8 @@ window.APP_DATA = {
         text: "How confident are you that you would recognise a phishing attack?",
         minLabel: "Not confident at all", maxLabel: "Completely confident" },
       { id: "s2", section: "Your self-assessment", type: "slider", min: 1, max: 10,
-        text: "How likely is it that you personally will be targeted by a cyberattack in the next 12 months?",
-        minLabel: "Very unlikely", maxLabel: "Very likely" },
+        text: "How attractive a target do you think you are for cybercriminals in your role?",
+        minLabel: "Not attractive at all", maxLabel: "Very attractive" },
       // Anchoring question: s3 sets the anchor (USD 80 million), s4 collects the free estimate.
       // Reference for the evaluation: FBI IC3 2025 report – USD 20.8 billion reported losses (USA only).
       { id: "s3", section: "Your self-assessment", type: "single",
@@ -64,8 +62,9 @@ window.APP_DATA = {
         hint: "Select all that apply.",
         options: ["Email", "Text message (SMS)", "Phone call", "Teams / internal chat", "LinkedIn", "WhatsApp", "QR code (e.g. on a letter or poster)", "None of these"] },
       { id: "e2", section: "Your experience", type: "single",
-        text: "Has any of the following ever happened to you?",
-        options: ["Never", "I'm not sure", "I clicked a suspicious link but didn't enter anything", "I entered login details on a suspicious page", "I opened a suspicious attachment"] },
+        text: "Have you ever experienced one of the following situations at work?",
+        hint: "If several apply, choose the most serious one.",
+        options: ["I clicked a suspicious link but didn't enter anything", "I opened a suspicious attachment", "I entered login details on a suspicious page", "None of the above ever happened to me", "I'm not sure if any of the above ever happened to me"] },
 
       // D – Behaviour
       { id: "b1", section: "Your behaviour", type: "matrix",
@@ -115,9 +114,7 @@ window.APP_DATA = {
       { id: "t3", section: "Training and protection", type: "multi",
         text: "Which learning formats do you prefer?",
         hint: "Select all that apply.",
-        options: ["Short videos", "Gamified training (like this one)", "Phishing simulations", "E-learning modules", "Classroom sessions", "Newsletter / tips"] },
-      { id: "t4", section: "Training and protection", type: "textarea", required: false,
-        text: "Where do you feel least secure when it comes to cybersecurity?" }
+        options: ["Short videos", "Gamified training (like this one)", "Phishing simulations", "E-learning modules", "Classroom sessions", "Newsletter / tips"] }
     ],
     post: [
       { id: "post1", topic: "Phishing",

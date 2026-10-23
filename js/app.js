@@ -312,7 +312,7 @@
       '</div>';
     });
     html += '<button class="btn" id="surveyNext">Continue to the modules →</button>'+
-            '<p class="note" style="margin-top:10px">Your answers are used only for the evaluation of this project.</p>'+
+            '<p class="note" style="margin-top:10px">Your answers are anonymous and used only for the evaluation of this project.</p>'+
             '</div>';
     sec.innerHTML = html;
 

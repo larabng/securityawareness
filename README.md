@@ -10,7 +10,7 @@ action. No real tools, templates or attack instructions are taught on purpose
 
 ## What's inside
 
-- **Pre-survey** (mandatory): 23-question cybersecurity survey – demographics, self-assessment sliders, an anchoring estimate, experience, behaviour matrices, scenario questions and a dual matrix (relevance vs. preparedness)
+- **Pre-survey** (mandatory): anonymous 20-question cybersecurity survey – demographics, self-assessment sliders, an anchoring estimate, experience, behaviour matrices, scenario questions and a dual matrix (relevance vs. preparedness)
 - **Expert videos** per module (placeholders until the real videos are available)
 - **Hacker missions** in a dark terminal interface + the two meters (loot value / company damage)
 - **Reveal** "What would have stopped you?" per module
