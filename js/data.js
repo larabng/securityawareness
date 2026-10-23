@@ -21,38 +21,103 @@ window.APP_DATA = {
   },
 
   /* ---------- Surveys (pre / post) ----------
-     Parallel, equally hard questions. The solution (correct) is NEVER shown
+     Pre = cybersecurity survey; post = scenario questions. The solution (correct) is NEVER shown
      to participants – it is only used for evaluation in the export. */
   surveys: {
-    profileQuestions: [
-      { id: "area", text: "Which area do you work in?", options: ["Recruiting / HR consulting", "Payroll / Administration", "Sales / Key Account", "IT", "Other"] },
-      { id: "experience", text: "Have you ever attended a cybersecurity training before?", options: ["No", "Yes, more than a year ago", "Yes, in the past year"] }
-    ],
+    /* ---------- Pre-survey: cybersecurity survey (23 questions) ----------
+       Question types: text, textarea, single, multi, slider, number,
+       matrix (one scale per row), dual (two scales per row).
+       "correct" is NEVER shown to participants – only used in the export.
+       required: false = optional question (default: required). */
     pre: [
-      { id: "pre1", topic: "Phishing",
-        text: "You receive an email: “Your applicant-portal account expires today at 17:00. Sign in now.” What do you do?",
-        options: ["Open the link in the email and check whether the page looks genuine", "Don't click; open the portal via your known bookmark and report the email", "Forward the email to a colleague and ask if they got it too", "Delete the email and do nothing else"],
-        correct: 1 },
-      { id: "pre2", topic: "Malicious application",
-        text: "An applicant sends her CV as a password-protected ZIP file, with the password in the email. How do you proceed?",
-        options: ["Open the ZIP file – applications have to be processed, after all", "Open the file on your private laptop so the work computer stays safe", "Ask the applicant to upload the documents via the applicant portal and report the email to IT", "Ignore the email"],
+      // A – About you
+      { id: "d1", section: "About you", type: "text", text: "Last name" },
+      { id: "d2", section: "About you", type: "text", text: "First name" },
+      { id: "d3", section: "About you", type: "single", text: "Gender",
+        options: ["Female", "Male", "Non-binary / diverse", "Prefer not to say"] },
+      { id: "d4", section: "About you", type: "single", text: "Age",
+        options: ["Under 25", "25–34", "35–44", "45–54", "55 or older"] },
+      { id: "d5", section: "About you", type: "single", text: "Which area do you work in?",
+        options: ["Recruiting / HR consulting", "Internal HR", "Finance / Payroll", "Sales / Key Account", "IT", "Management", "Other"] },
+      { id: "d6", section: "About you", type: "single", text: "How do you mainly work?",
+        options: ["Office only", "Mostly in the office", "Hybrid (about 50:50)", "Mostly remote", "Remote only"] },
+
+      // B – Self-assessment and perception
+      { id: "s1", section: "Your self-assessment", type: "slider", min: 1, max: 10,
+        text: "How confident are you that you would recognise a phishing attack?",
+        minLabel: "Not confident at all", maxLabel: "Completely confident" },
+      { id: "s2", section: "Your self-assessment", type: "slider", min: 1, max: 10,
+        text: "How likely is it that you personally will be targeted by a cyberattack in the next 12 months?",
+        minLabel: "Very unlikely", maxLabel: "Very likely" },
+      // Anchoring question: s3 sets the anchor (USD 80 million), s4 collects the free estimate.
+      // Reference for the evaluation: FBI IC3 2025 report – USD 20.8 billion reported losses (USA only).
+      { id: "s3", section: "Your self-assessment", type: "single",
+        text: "Do you think criminals make more or less than USD 80 million a year from data breaches and cyberattacks?",
+        options: ["More than USD 80 million", "Less than USD 80 million"] },
+      { id: "s4", section: "Your self-assessment", type: "number",
+        text: "And what do you think the actual amount is per year?",
+        hint: "Your best guess – enter a number and choose the unit." },
+
+      // C – Experience
+      { id: "e1", section: "Your experience", type: "multi",
+        text: "Through which channels have you received suspicious messages in the past 12 months?",
+        hint: "Select all that apply.",
+        options: ["Email", "Text message (SMS)", "Phone call", "Teams / internal chat", "LinkedIn", "WhatsApp", "QR code (e.g. on a letter or poster)", "None of these"] },
+      { id: "e2", section: "Your experience", type: "single",
+        text: "Has any of the following ever happened to you?",
+        options: ["Never", "I'm not sure", "I clicked a suspicious link but didn't enter anything", "I entered login details on a suspicious page", "I opened a suspicious attachment"] },
+
+      // D – Behaviour
+      { id: "b1", section: "Your behaviour", type: "matrix",
+        text: "How often do you do the following?",
+        scale: ["Never", "Rarely", "Sometimes", "Often", "Always"],
+        rows: ["I check the sender's email address carefully", "I check where a link leads before I click it", "I open attachments from unknown applicants directly", "I use the same password for several accounts", "I lock my screen when I leave my desk"] },
+      { id: "b2", section: "Your behaviour", type: "matrix",
+        text: "How much do you agree with the following statements?",
+        scale: ["Strongly disagree", "Disagree", "Somewhat disagree", "Neutral", "Somewhat agree", "Agree", "Strongly agree"],
+        rows: ["I would question an urgent instruction from the CEO", "Security rules slow down my work", "I know whom to report a security incident to", "I would report an incident even if I made the mistake myself"] },
+
+      // E – Recognising attacks (knowledge, scored in the export)
+      { id: "k1", section: "Recognise the attack", type: "multi",
+        text: "Which of these are warning signs of a phishing or fraud attempt?",
+        hint: "Select all that apply.",
+        options: ["Time pressure (“today”, “within 20 minutes”)", "A sender address that differs slightly from the real one", "A request to keep it confidential", "Signing in via a link in the message", "A password-protected ZIP attachment", "You are addressed by your name", "The company logo is shown", "Flawless language"],
+        correct: [0, 1, 2, 3, 4] },
+      { id: "k2", section: "Recognise the attack", type: "single",
+        text: "The CEO emails you: “Confidential. I need all candidate profiles for Client X within 20 minutes.” What do you do?",
+        options: ["Send the profiles immediately", "Reply to the email and ask whether it's genuine", "Call the number given in the email", "Check back with the CEO via a known channel (e.g. number from the directory)", "Ignore the email", "Forward it to a colleague"],
+        correct: 3 },
+      { id: "k3", section: "Recognise the attack", type: "single",
+        text: "An applicant sends her CV as a password-protected ZIP file. What do you do?",
+        options: ["Open it – applications have to be processed", "Scan it with antivirus first, then open it", "Ask a colleague what to do", "Ask the applicant to upload the documents via the applicant portal and report the email", "Delete the email without a word"],
+        correct: 3 },
+      { id: "k4", section: "Recognise the attack", type: "single",
+        text: "You have just clicked a link in a phishing email. What do you do first?",
+        options: ["Nothing – probably nothing happened", "Change my password and tell no one", "Report it to IT immediately", "Restart my computer", "Wait and see whether anything happens"],
         correct: 2 },
-      { id: "pre3", topic: "CEO fraud",
-        text: "The CEO writes to you (correct name, but an unfamiliar address): “Confidential. I need all candidate profiles for Client X within 30 minutes.” What do you do?",
-        options: ["Send the profiles – it's the CEO, after all", "Reply directly to the email and ask whether the request is genuine", "Contact the CEO through a known second channel (number from the directory) and report the case", "Send only some of the profiles"],
-        correct: 2 },
-      { id: "pre4", topic: "Fake candidate / deepfake",
-        text: "In the video interview, picture and sound are slightly out of sync and the lips don't quite match the voice. The candidate refuses to briefly hold a hand in front of their face. What do you do?",
-        options: ["Carry on as normal – the connection is just bad", "Verify the identity with an extra step (e.g. live ID or an in-person meeting) and document the anomaly", "End the call and warn about the candidate publicly on LinkedIn", "Refer the candidate to the client straight away"],
-        correct: 1 },
-      { id: "pre5", topic: "Ransomware",
-        text: "A message appears on your screen: “Your files have been encrypted. Pay 2 Bitcoin.” What is the first correct step?",
-        options: ["Restart the computer", "Disconnect from the network, do not switch the computer off, and inform IT immediately", "Restore the files from backup yourself", "Pay the ransom so operations can continue"],
-        correct: 1 },
-      { id: "pre6", topic: "Reporting",
-        text: "An hour ago you clicked a link in a strange email and now you're unsure. What do you do?",
-        options: ["Wait and see whether anything happens", "Change the password and tell no one", "Report it to IT immediately, even if it's uncomfortable", "Delete the email so no one else clicks it"],
-        correct: 2 }
+
+      // F – Risk vs. preparedness (gap = relevance − preparedness)
+      { id: "g1", section: "Risk vs. preparedness", type: "dual",
+        text: "For each threat, rate how relevant it is to your work and how well prepared you feel.",
+        hint: "1 = very low · 5 = very high",
+        cols: [ { label: "Relevance to my work", scale: ["1", "2", "3", "4", "5"] },
+                { label: "How prepared I feel",  scale: ["1", "2", "3", "4", "5"] } ],
+        rows: ["Phishing", "Malware in application documents", "CEO fraud", "Fake candidates and deepfakes", "Ransomware"] },
+
+      // G – Training and protection
+      { id: "t1", section: "Training and protection", type: "single",
+        text: "When did you last attend a cybersecurity training?",
+        options: ["In the last 6 months", "6–12 months ago", "1–2 years ago", "More than 2 years ago", "Never", "I don't know"] },
+      { id: "t2", section: "Training and protection", type: "multi",
+        text: "Which of these protective measures do you use at work?",
+        hint: "Select all that apply.",
+        options: ["Multi-factor authentication (MFA)", "Password manager", "VPN when working remotely", "Report-phishing button", "Automatic updates", "Screen lock", "None of these"] },
+      { id: "t3", section: "Training and protection", type: "multi",
+        text: "Which learning formats do you prefer?",
+        hint: "Select all that apply.",
+        options: ["Short videos", "Gamified training (like this one)", "Phishing simulations", "E-learning modules", "Classroom sessions", "Newsletter / tips"] },
+      { id: "t4", section: "Training and protection", type: "textarea", required: false,
+        text: "Where do you feel least secure when it comes to cybersecurity?" }
     ],
     post: [
       { id: "post1", topic: "Phishing",

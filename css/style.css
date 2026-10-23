@@ -325,3 +325,32 @@ img { max-width: 100%; }
 
 .keyslot.locked { opacity:.5; }
 .keyslot.locked .kic { filter:grayscale(1) opacity(.6); }
+
+/* ---------- Pre-survey (cybersecurity survey) ---------- */
+.sv-section { margin:30px 0 12px; color:var(--mp-navy); }
+.sv-q { font-weight:600; margin:6px 0 4px; }
+.sv-hint { margin:0 0 8px; }
+.q-card.missing { border-color:var(--mp-red); box-shadow:0 0 0 2px rgba(214,69,65,.18); }
+.sv-input { width:100%; padding:11px; border-radius:10px; border:1px solid var(--line);
+  font-family:inherit; font-size:15px; background:#fff; color:var(--ink); margin-top:8px; }
+.sv-input:focus { outline:none; border-color:var(--mp-blue); box-shadow:0 0 0 3px rgba(0,101,179,.15); }
+textarea.sv-input { resize:vertical; }
+.sv-number { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.sv-number span { margin-top:8px; font-weight:600; color:var(--ink-soft); }
+.sv-number input { flex:1 1 140px; width:auto; }
+.sv-number select { flex:0 0 auto; width:auto; }
+.sv-slider { margin-top:12px; }
+.sv-slider input[type=range] { width:100%; accent-color:var(--mp-blue); }
+.sv-slider.unset input[type=range] { opacity:.45; }
+.sv-slider-labels { display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--ink-soft); margin-top:6px; }
+.sv-slider-labels output { font-weight:800; font-size:18px; color:var(--mp-navy); text-align:center; }
+.sv-slider.unset .sv-slider-labels output { font-size:13px; font-weight:600; color:var(--mp-orange); }
+.mx-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
+.mx { width:100%; border-collapse:collapse; font-size:14px; min-width:560px; }
+.mx th { font-size:12px; font-weight:600; color:var(--ink-soft); padding:6px 4px; text-align:center; vertical-align:bottom; }
+.mx td { text-align:center; padding:10px 4px; border-top:1px solid var(--line); }
+.mx td.mx-row { text-align:left; padding-right:12px; min-width:180px; }
+.mx tbody tr:hover td { background:#f5faff; }
+.mx input[type=radio] { width:18px; height:18px; accent-color:var(--mp-blue); cursor:pointer; }
+.mx .mx-group { color:var(--mp-navy); font-size:13px; border-bottom:2px solid var(--mp-blue); }
+.mx .mx-split { border-left:2px solid var(--line); }

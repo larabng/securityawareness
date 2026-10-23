@@ -15,6 +15,7 @@
   // Run state
   var state = {
     started: false,
+    preDone: false,
     team: null,
     pre: {}, preConf: {},
     post: {}, postConf: {},
@@ -54,7 +55,7 @@
   function updateProgress(){
     var total = 4; // survey, modules, defense, result
     var done = 0;
-    if (Object.keys(state.pre).length) done++;
+    if (state.preDone) done++;
     if (Object.keys(state.missionDone).length) done++;
     if (Object.keys(state.defense).length) done++;
     if (Object.keys(state.post).length) done++;
@@ -123,6 +124,7 @@
      SURVEY (generic for pre / post)  –  pre = Guided, post = Assessment
      ========================================================================= */
   function renderSurvey(which){
+    if (which === "pre") return renderBigSurvey();
     var isPre = which === "pre";
     var sec = $(isPre ? "#survey-pre" : "#survey-post");
     var qs = D.surveys[which];
@@ -212,6 +214,202 @@
   }
 
   /* =========================================================================
+     PRE-SURVEY – cybersecurity survey (text, single, multi, slider, number,
+     matrix, dual matrix). Answers live in state.pre, keyed by question id.
+     ========================================================================= */
+  var UNITS = { thousand: 1e3, million: 1e6, billion: 1e9 };
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+  function preQ(id){ return D.surveys.pre.filter(function(q){ return q.id===id; })[0]; }
+
+  function fieldHTML(q, v){
+    var h = "";
+    switch (q.type){
+      case "text":
+        return '<input class="sv-input" type="text" data-k="'+q.id+'" value="'+esc(v||"")+'" autocomplete="off">';
+      case "textarea":
+        return '<textarea class="sv-input" rows="3" data-k="'+q.id+'">'+esc(v||"")+'</textarea>';
+      case "single":
+      case "multi":
+        var multi = q.type==="multi";
+        h = '<div class="q-opts">';
+        q.options.forEach(function(o,i){
+          var on = multi ? (v||[]).indexOf(i)>-1 : v===i;
+          h += '<label class="q-opt'+(on?" sel":"")+'"><input type="'+(multi?"checkbox":"radio")+'" name="'+q.id+'" value="'+i+'"'+(on?" checked":"")+'><span>'+o+'</span></label>';
+        });
+        return h+'</div>';
+      case "slider":
+        var mid = Math.round((q.min+q.max)/2);
+        return '<div class="sv-slider'+(v==null?" unset":"")+'">'+
+          '<input type="range" min="'+q.min+'" max="'+q.max+'" step="1" data-k="'+q.id+'" value="'+(v!=null?v:mid)+'">'+
+          '<div class="sv-slider-labels"><span>'+q.min+' · '+q.minLabel+'</span><output>'+(v!=null?v:"move the slider")+'</output><span>'+q.max+' · '+q.maxLabel+'</span></div></div>';
+      case "number":
+        var unit = v ? v.unit : "million";
+        h = '<div class="sv-number"><span>USD</span><input class="sv-input" type="number" min="0" step="any" inputmode="decimal" data-k="'+q.id+'" value="'+(v?v.amount:"")+'" placeholder="e.g. 250">'+
+          '<select class="sv-input" data-unit="'+q.id+'">';
+        Object.keys(UNITS).forEach(function(u){ h += '<option value="'+u+'"'+(u===unit?" selected":"")+'>'+u+'</option>'; });
+        return h+'</select><span>per year</span></div>';
+      case "matrix":
+        h = '<div class="mx-wrap"><table class="mx"><thead><tr><th></th>';
+        q.scale.forEach(function(s){ h += '<th>'+s+'</th>'; });
+        h += '</tr></thead><tbody>';
+        q.rows.forEach(function(r,ri){
+          h += '<tr><td class="mx-row">'+r+'</td>';
+          q.scale.forEach(function(s,si){
+            var on = v && v[ri]===si;
+            h += '<td><input type="radio" name="'+q.id+'__'+ri+'" value="'+si+'" aria-label="'+esc(r+": "+s)+'"'+(on?" checked":"")+'></td>';
+          });
+          h += '</tr>';
+        });
+        return h+'</tbody></table></div>';
+      case "dual":
+        h = '<div class="mx-wrap"><table class="mx dual"><thead><tr><th></th>';
+        q.cols.forEach(function(c){ h += '<th colspan="'+c.scale.length+'" class="mx-group">'+c.label+'</th>'; });
+        h += '</tr><tr><th></th>';
+        q.cols.forEach(function(c,ci){ c.scale.forEach(function(s,si){ h += '<th class="'+(ci&&!si?"mx-split":"")+'">'+s+'</th>'; }); });
+        h += '</tr></thead><tbody>';
+        q.rows.forEach(function(r,ri){
+          h += '<tr><td class="mx-row">'+r+'</td>';
+          q.cols.forEach(function(c,ci){
+            var key = ci ? "b" : "a";
+            c.scale.forEach(function(s,si){
+              var on = v && v[ri] && v[ri][key]===si;
+              h += '<td class="'+(ci&&!si?"mx-split":"")+'"><input type="radio" name="'+q.id+'__'+ri+'__'+key+'" value="'+si+'" aria-label="'+esc(r+" – "+c.label+": "+s)+'"'+(on?" checked":"")+'></td>';
+            });
+          });
+          h += '</tr>';
+        });
+        return h+'</tbody></table></div>';
+    }
+    return "";
+  }
+
+  function isAnswered(q, v){
+    if (q.required===false) return true;
+    switch (q.type){
+      case "text": case "textarea": return !!(v && v.length);
+      case "single": case "slider": return v!=null;
+      case "multi": return !!(v && v.length);
+      case "number": return !!(v && isFinite(v.usd));
+      case "matrix": return !!v && q.rows.every(function(r,i){ return v[i]!=null; });
+      case "dual": return !!v && q.rows.every(function(r,i){ return v[i] && v[i].a!=null && v[i].b!=null; });
+    }
+    return true;
+  }
+
+  function renderBigSurvey(){
+    var sec = $("#survey-pre"), qs = D.surveys.pre, store = state.pre;
+    var html = '<div class="wrap">'+
+      '<div class="eyebrow">Step 1 · Before the training</div>'+
+      '<h2>Cybersecurity survey</h2>'+
+      '<p class="lead">'+qs.length+' questions, about 10 minutes. Answer the way you really act at work – there is no penalty for honest answers.</p>';
+    var lastSection = null;
+    qs.forEach(function(q, qi){
+      if (q.section !== lastSection){ html += '<h3 class="sv-section">'+q.section+'</h3>'; lastSection = q.section; }
+      html += '<div class="q-card" data-qid="'+q.id+'">'+
+        '<p class="sv-q">'+(qi+1)+'. '+q.text+(q.required===false?' <span class="note">(optional)</span>':'')+'</p>'+
+        (q.hint ? '<p class="note sv-hint">'+q.hint+'</p>' : '')+
+        fieldHTML(q, store[q.id])+
+      '</div>';
+    });
+    html += '<button class="btn" id="surveyNext">Continue to the modules →</button>'+
+            '<p class="note" style="margin-top:10px">Your answers are used only for the evaluation of this project.</p>'+
+            '</div>';
+    sec.innerHTML = html;
+
+    function onField(e){
+      var t = e.target, card = t.closest(".q-card"); if (!card) return;
+      var q = preQ(card.getAttribute("data-qid")); if (!q) return;
+      card.classList.remove("missing");
+      switch (q.type){
+        case "text": case "textarea":
+          store[q.id] = t.value.trim(); break;
+        case "single":
+          store[q.id] = parseInt(t.value,10);
+          $$(".q-opt", card).forEach(function(l){ l.classList.toggle("sel", l.querySelector("input").checked); });
+          break;
+        case "multi":
+          store[q.id] = $$("input:checked", card).map(function(x){ return parseInt(x.value,10); });
+          $$(".q-opt", card).forEach(function(l){ l.classList.toggle("sel", l.querySelector("input").checked); });
+          break;
+        case "slider":
+          store[q.id] = parseInt(t.value,10);
+          $("output", card).textContent = t.value;
+          $(".sv-slider", card).classList.remove("unset");
+          break;
+        case "number":
+          var amt = parseFloat($("input", card).value), unit = $("select", card).value;
+          if (isFinite(amt) && amt >= 0) store[q.id] = { amount: amt, unit: unit, usd: amt*UNITS[unit] };
+          else delete store[q.id];
+          break;
+        case "matrix":
+          var p = t.name.split("__");
+          store[q.id] = store[q.id] || {}; store[q.id][p[1]] = parseInt(t.value,10); break;
+        case "dual":
+          var d = t.name.split("__");
+          store[q.id] = store[q.id] || {}; store[q.id][d[1]] = store[q.id][d[1]] || {};
+          store[q.id][d[1]][d[2]] = parseInt(t.value,10); break;
+      }
+      save();
+    }
+    sec.onchange = onField;
+    sec.oninput = onField;
+
+    $("#surveyNext", sec).onclick = function(){
+      var missing = qs.filter(function(q){ return !isAnswered(q, store[q.id]); });
+      $$(".q-card.missing", sec).forEach(function(c){ c.classList.remove("missing"); });
+      if (missing.length){
+        missing.forEach(function(q){ $('.q-card[data-qid="'+q.id+'"]', sec).classList.add("missing"); });
+        toast("Please answer all questions ("+missing.length+" still open).");
+        $('.q-card[data-qid="'+missing[0].id+'"]', sec).scrollIntoView({behavior:"smooth", block:"center"});
+        return;
+      }
+      state.preDone = true; save(); updateProgress();
+      toast("Survey done – modules unlocked!"); renderModules(); show("modules");
+    };
+  }
+
+  /* Export rows for the pre-survey (one field per value, codebook = js/data.js) */
+  function preExportRows(){
+    var out = [];
+    D.surveys.pre.forEach(function(q){
+      var v = state.pre[q.id], k = "pre_"+q.id;
+      switch (q.type){
+        case "text": case "textarea": out.push([k, v||""]); break;
+        case "slider": out.push([k, v!=null?v:""]); break;
+        case "single":
+          out.push([k, v!=null?q.options[v]:""]);
+          if (q.correct!=null) out.push([k+"_correct", v===q.correct?"1":"0"]);
+          break;
+        case "multi":
+          var sel = v||[];
+          out.push([k, sel.map(function(i){ return q.options[i]; }).join("; ")]);
+          q.options.forEach(function(o,i){ out.push([k+"_opt"+(i+1), sel.indexOf(i)>-1?"1":"0"]); });
+          if (q.correct){
+            var right = q.options.filter(function(o,i){ return (sel.indexOf(i)>-1) === (q.correct.indexOf(i)>-1); }).length;
+            out.push([k+"_score", right+"/"+q.options.length]);
+          }
+          break;
+        case "number":
+          out.push([k+"_usd", v?v.usd:""]);
+          out.push([k+"_input", v?v.amount+" "+v.unit:""]);
+          break;
+        case "matrix":
+          q.rows.forEach(function(r,i){ out.push([k+"_r"+(i+1), v&&v[i]!=null?v[i]+1:""]); });
+          break;
+        case "dual":
+          q.rows.forEach(function(r,i){
+            var a = v&&v[i]&&v[i].a!=null ? v[i].a+1 : "", b = v&&v[i]&&v[i].b!=null ? v[i].b+1 : "";
+            out.push([k+"_r"+(i+1)+"_relevance", a]);
+            out.push([k+"_r"+(i+1)+"_prepared", b]);
+            out.push([k+"_r"+(i+1)+"_gap", a!==""&&b!==""?a-b:""]);
+          });
+          break;
+      }
+    });
+    return out;
+  }
+
+  /* =========================================================================
      MODULES – overview
      ========================================================================= */
   function isUnlocked(m){
@@ -221,7 +419,7 @@
   }
 
   function renderModules(){
-    var locked = !Object.keys(state.pre).length;
+    var locked = !state.preDone;
     var sec = $("#modules");
     if (locked){
       sec.innerHTML = '<div class="wrap"><div class="gate card"><div class="ic">🔒</div><h2>The pre-survey comes first</h2>'+
@@ -563,7 +761,7 @@
     rows.push(["points", state.points]);
     rows.push(["max_streak", state.maxStreak]);
     rows.push(["keys_collected", keysCollected()+"/"+keysTotal()]);
-    D.surveys.pre.forEach(function(q){ rows.push(["pre_"+q.id, labelOf(q,state.pre[q.id])]); rows.push(["pre_conf_"+q.id, state.preConf[q.id]!=null?state.preConf[q.id]+1:""]); rows.push(["pre_correct_"+q.id, state.pre[q.id]===q.correct?"1":"0"]); });
+    preExportRows().forEach(function(r){ rows.push(r); });
     D.surveys.post.forEach(function(q){ rows.push(["post_"+q.id, labelOf(q,state.post[q.id])]); rows.push(["post_conf_"+q.id, state.postConf[q.id]!=null?state.postConf[q.id]+1:""]); rows.push(["post_correct_"+q.id, state.post[q.id]===q.correct?"1":"0"]); });
     MODULES.forEach(function(m){ rows.push(["mod_done_"+m.id, state.missionDone[m.id]?"1":"0"]); rows.push(["mod_key_"+m.id, state.keys[m.id]?"1":"0"]); rows.push(["mod_hints_"+m.id, state.hints[m.id]||0]); });
     INBOX.forEach(function(m){ var a=state.defense[m.id]; rows.push(["def_"+m.id, a?a.action:""]); rows.push(["def_correct_"+m.id, a&&a.correct?"1":"0"]); });
