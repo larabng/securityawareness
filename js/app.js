@@ -7,20 +7,28 @@
    ========================================================================= */
 (function () {
   "use strict";
-  var D = window.APP_DATA, MODULES = window.MODULES, INBOX = window.DEFENSE_INBOX;
+  var D = window.APP_DATA, MODULES = window.MODULES;
+  // Mails tied to a module only show up once that module is available
+  var INBOX = window.DEFENSE_INBOX.filter(function(mail){
+    return !mail.module || MODULES.some(function(m){ return m.id===mail.module && m.available; });
+  });
 
   var DIFF_POINTS = { easy: 30, medium: 50, hard: 80 };
   var DIFF_LABEL  = { easy: "Easy", medium: "Medium", hard: "Hard" };
+  var ACTION_LABEL = { process: "Process", verify: "Verify (2nd channel)", report: "Report", reject: "Reject" };
+  var APP_VERSION = "2026-10-26";
 
   // Run state
   var state = {
     started: false,
+    runId: null, startedAt: null, exported: false,
     preDone: false,
     team: null,
     pre: {}, preConf: {},
     post: {}, postConf: {},
     feedback: {},
     missionDone: {},   // moduleId -> true
+    missionPicks: {},  // moduleId -> risk of the chosen option per step (first run)
     keys: {},          // moduleId -> true (collected key)
     hints: {},         // moduleId -> number of hints used
     points: 0,
@@ -37,7 +45,14 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function el(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
 
-  function toast(msg){ var t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},2200); }
+  function shuffled(n){
+    var a = []; for (var i=0;i<n;i++) a.push(i);
+    for (var j=n-1;j>0;j--){ var k=Math.floor(Math.random()*(j+1)); var t=a[j]; a[j]=a[k]; a[k]=t; }
+    return a;
+  }
+
+  var toastTimer;
+  function toast(msg){ var t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},2600); }
 
   // One key per module. Keys collected across ALL modules; the company gate
   // opens once every module's key is collected.
@@ -115,68 +130,54 @@
         '</div>'+
       '</div>';
     $("#goStart").onclick = function(){
-      state.team = $("#teamSel").value; state.started = true; save();
+      state.team = $("#teamSel").value; state.started = true;
+      if (!state.runId){ state.runId = Math.random().toString(36).slice(2,8).toUpperCase(); state.startedAt = new Date().toISOString(); }
+      save();
       toast("Good luck, "+state.team+"!"); show("survey-pre");
     };
   }
 
   /* =========================================================================
-     SURVEY (generic for pre / post)  –  pre = Guided, post = Assessment
+     SURVEY – "pre" is the big cybersecurity survey (renderBigSurvey),
+     "post" = scenario questions with confidence + feedback
      ========================================================================= */
   function renderSurvey(which){
     if (which === "pre") return renderBigSurvey();
-    var isPre = which === "pre";
-    var sec = $(isPre ? "#survey-pre" : "#survey-post");
-    var qs = D.surveys[which];
-    var store = isPre ? state.pre : state.post;
-    var conf = isPre ? state.preConf : state.postConf;
+    var sec = $("#survey-post");
+    var qs = D.surveys.post, store = state.post, conf = state.postConf;
 
     var html = '<div class="wrap">'+
-      '<div class="eyebrow">'+(isPre?"Step 1 · Before · Guided mode":"Final step · After · Assessment mode")+'</div>'+
-      '<h2>'+(isPre?"How would you rate yourself?":"To finish: the same situations, rethought")+'</h2>'+
+      '<div class="eyebrow">Final step · After the training</div>'+
+      '<h2>To finish: situations from everyday work</h2>'+
       '<p class="lead">There are no visible solutions here. Answer each question and tell us how sure you are.</p>';
-
-    if (isPre){
-      html += '<div class="q-card"><div class="topic">About you</div>';
-      D.surveys.profileQuestions.forEach(function(pq){
-        html += '<p style="font-weight:600;margin:14px 0 8px">'+pq.text+'</p><div class="q-opts">';
-        pq.options.forEach(function(o,i){
-          html += '<label class="q-opt"><input type="radio" name="'+pq.id+'" value="'+i+'"><span>'+o+'</span></label>';
-        });
-        html += '</div>';
-      });
-      html += '</div>';
-    }
 
     qs.forEach(function(q, qi){
       html += '<div class="q-card" data-qid="'+q.id+'">'+
         '<div class="topic">'+q.topic+'</div>'+
-        '<p style="font-weight:600;margin:6px 0 2px">'+(qi+1)+'. '+q.text+'</p>'+
+        '<p class="sv-q">'+(qi+1)+'. '+q.text+'</p>'+
         '<div class="q-opts">';
       q.options.forEach(function(o,i){
-        var sel = store[q.id]===i ? " sel":"";
-        html += '<label class="q-opt'+sel+'"><input type="radio" name="'+q.id+'" value="'+i+'"'+(store[q.id]===i?" checked":"")+'><span>'+o+'</span></label>';
+        var on = store[q.id]===i;
+        html += '<label class="q-opt'+(on?" sel":"")+'"><input type="radio" name="'+q.id+'" value="'+i+'"'+(on?" checked":"")+'><span>'+o+'</span></label>';
       });
       html += '</div>'+
         '<div class="confidence"><div class="note" style="margin-bottom:6px">How sure are you?</div><div class="scale" data-conf="'+q.id+'">';
       D.surveys.confidenceLabels.forEach(function(lab,i){
-        var cs = conf[q.id]===i?" sel":"";
-        html += '<button class="'+cs.trim()+'" data-v="'+i+'">'+lab+'</button>';
+        html += '<button class="'+(conf[q.id]===i?"sel":"")+'" data-v="'+i+'">'+lab+'</button>';
       });
       html += '</div></div></div>';
     });
 
-    if (!isPre){
-      html += '<div class="q-card"><div class="topic">Feedback</div>';
-      D.surveys.feedback.forEach(function(fb){
-        html += '<p style="font-weight:600;margin:14px 0 6px">'+fb.text+'</p><div class="scale" data-fb="'+fb.id+'">';
-        for (var i=1;i<=5;i++){ var s=state.feedback[fb.id]===i?" sel":""; html+='<button class="'+s.trim()+'" data-v="'+i+'">'+i+'</button>'; }
-        html += '</div>';
-      });
+    html += '<div class="q-card" data-qid="feedback"><div class="topic">Feedback</div>'+
+      '<p class="note" style="margin:4px 0 0">1 = not at all · 5 = very much</p>';
+    D.surveys.feedback.forEach(function(fb){
+      html += '<p class="sv-q" style="margin-top:14px">'+fb.text+'</p><div class="scale" data-fb="'+fb.id+'">';
+      for (var i=1;i<=5;i++){ html += '<button class="'+(state.feedback[fb.id]===i?"sel":"")+'" data-v="'+i+'">'+i+'</button>'; }
       html += '</div>';
-    }
+    });
+    html += '</div>';
 
-    html += '<button class="btn" id="surveyNext">'+(isPre?"Continue to the modules →":"See the evaluation →")+'</button>'+
+    html += '<button class="btn" id="surveyNext">See the evaluation →</button>'+
             '<p class="note" style="margin-top:10px">Your answers stay private. For the test evaluation, the facilitator can export all answers anonymised as a CSV.</p>'+
             '</div>';
     sec.innerHTML = html;
@@ -191,25 +192,27 @@
         save();
       };
     });
-    $$(".scale[data-conf]", sec).forEach(function(sc){
+    $$(".scale", sec).forEach(function(sc){
       $$("button", sc).forEach(function(b){ b.onclick=function(){
-        conf[sc.getAttribute("data-conf")] = parseInt(b.getAttribute("data-v"),10);
-        $$("button",sc).forEach(function(x){x.classList.remove("sel");}); b.classList.add("sel"); save();
-      };});
-    });
-    $$(".scale[data-fb]", sec).forEach(function(sc){
-      $$("button", sc).forEach(function(b){ b.onclick=function(){
-        state.feedback[sc.getAttribute("data-fb")] = parseInt(b.getAttribute("data-v"),10);
+        var v = parseInt(b.getAttribute("data-v"),10);
+        if (sc.hasAttribute("data-conf")) conf[sc.getAttribute("data-conf")] = v;
+        else state.feedback[sc.getAttribute("data-fb")] = v;
         $$("button",sc).forEach(function(x){x.classList.remove("sel");}); b.classList.add("sel"); save();
       };});
     });
 
     $("#surveyNext", sec).onclick = function(){
-      var need = qs.length, got = qs.filter(function(q){return store[q.id]!=null;}).length;
-      if (got < need){ toast("Please answer all "+need+" questions ("+got+"/"+need+")."); return; }
+      // answer AND confidence per question, plus all feedback items
+      var missing = qs.filter(function(q){ return store[q.id]==null || conf[q.id]==null; }).map(function(q){ return q.id; });
+      if (D.surveys.feedback.some(function(f){ return state.feedback[f.id]==null; })) missing.push("feedback");
+      $$(".q-card", sec).forEach(function(c){ c.classList.toggle("missing", missing.indexOf(c.getAttribute("data-qid"))>-1); });
+      if (missing.length){
+        toast("Please answer every question and say how sure you are ("+missing.length+" still open).");
+        $('.q-card[data-qid="'+missing[0]+'"]', sec).scrollIntoView({behavior:"smooth", block:"center"});
+        return;
+      }
       save(); updateProgress();
-      if (isPre){ toast("Pre-survey done – modules unlocked!"); renderModules(); show("modules"); }
-      else { renderResult(); show("result"); }
+      renderResult(); show("result");
     };
   }
 
@@ -452,7 +455,7 @@
     sec.innerHTML = '<div class="wrap">'+
       '<div class="eyebrow">Step 2 · Modules</div>'+
       '<h2>Five weaknesses in recruiting</h2>'+
-      '<p class="lead">For the test phase, modules 1 (phishing) and 3 (CEO fraud) are unlocked. Each module: expert video → hacker mission → reveal, and earns you a key, a badge and points.</p>'+
+      '<p class="lead">All five modules are playable – module 5 opens once you hold 4 keys. Each module: expert video → hacker mission → reveal, and earns you a key, a badge and points.</p>'+
       scoreStripHTML()+
       keyringHTML()+
       '<div class="bars card" style="margin:18px 0">'+barsHTML()+'</div>'+
@@ -495,7 +498,7 @@
       var media = v.url
         ? (/youtube|youtu\.be|vimeo/.test(v.url)
             ? '<iframe src="'+v.url+'" allowfullscreen></iframe>'
-            : '<video controls src="'+v.url+'"></video>')
+            : '<video controls playsinline preload="metadata" src="'+v.url+'"></video>')
         : '<div class="placeholder"><div class="play">▶</div><p>Expert video to follow<br><span class="note" style="color:#9fc0e4">'+v.expert+' · '+v.duration+'</span></p></div>';
       var pts = v.points.map(function(p){ return '<li><b>'+p[0]+'</b> '+p[1]+'</li>'; }).join("");
       sec.innerHTML = '<div class="wrap">'+pills()+
@@ -515,8 +518,9 @@
       var mi = m.mission, stepIdx = 0;
       function drawStep(){
         var st = mi.steps[stepIdx];
-        var opts = st.options.map(function(o,i){
-          return '<button class="opt" data-i="'+i+'">'+o.t+'</button>';
+        // random order so the strongest option isn't always first
+        var opts = shuffled(st.options.length).map(function(i){
+          return '<button class="opt" data-i="'+i+'">'+st.options[i].t+'</button>';
         }).join("");
         var hintBtn = st.hint ? '<button class="hint-btn" id="hintBtn">💡 Show hint (−10 pts)</button><div id="hintBox"></div>' : '';
         var body = '<div class="mission-q mono">root@talentbridge:~$ target = "'+mi.target+'"</div>'+
@@ -541,15 +545,23 @@
             picks.push(opt);
             var hb = $("#hintBtn"); if (hb) hb.disabled = true;
             setTimeout(function(){
-              // short per-step micro-reveal
-              var note = el("div","reveal"); note.style.marginTop="12px";
-              note.innerHTML = '<b style="color:var(--mp-navy)">Giveaway:</b> '+opt.why;
+              // short per-step micro-reveal: mark the strongest option and explain it
+              var best = st.options.filter(function(o){ return o.risk===3; })[0];
+              $$("#termbody .opt").forEach(function(b){
+                if (st.options[parseInt(b.getAttribute("data-i"),10)]===best) b.classList.add("best");
+              });
+              var found = opt===best;
+              var note = el("div","giveaway "+(found?"ok":"miss"));
+              note.innerHTML = found
+                ? '<b>✅ Strongest building block.</b> '+opt.why
+                : '<b>Not the strongest choice.</b> '+opt.why+
+                  '<div class="gv-best"><b>Strongest:</b> '+best.t+' – '+best.why+'</div>';
               $("#termbody").appendChild(note);
               var nx = el("button","btn alt", (stepIdx<mi.steps.length-1?"Next step →":"Score the mission →"));
               nx.style.marginTop="14px";
               nx.onclick=function(){ stepIdx++; if(stepIdx<mi.steps.length) drawStep(); else finishMission(); };
               $("#termbody").appendChild(nx);
-              $$("#termbody .opt").forEach(function(b){ b.disabled=true; b.style.opacity=.6; });
+              $$("#termbody .opt").forEach(function(b){ b.disabled=true; });
             }, 250);
           };
         });
@@ -573,12 +585,14 @@
       if (firstTime){
         state.loot = Math.min(100, state.loot + gain);
         state.damage = Math.min(100, state.damage + Math.round(gain*1.3));
-        // points: difficulty base minus hints used (floor 10), plus key + badge
+        // points: difficulty base scaled by how well the steps were assessed,
+        // minus hints used (floor 10), plus key + badge
         var base = DIFF_POINTS[m.difficulty||"medium"];
         var hintsUsed = state.hints[m.id]||0;
-        earnedPts = Math.max(10, base - hintsUsed*10);
+        earnedPts = Math.max(10, Math.round(base*score/maxScore) - hintsUsed*10);
         addPoints(earnedPts);
         state.keys[m.id] = true;        // collect the key
+        state.missionPicks[m.id] = picks.map(function(o){ return o.risk; });
       }
       state.missionDone[m.id] = true; save();
       if (firstTime) toast("+"+earnedPts+" points · "+m.key.icon+" "+m.key.name+" collected!");
@@ -624,10 +638,7 @@
         '<div class="head"><span class="from">'+mail.from+'</span></div>'+
         '<div class="subj">'+mail.subject+'</div><div class="prev">'+mail.preview+'</div>'+
         '<div class="actions">'+
-          '<button data-act="process">Process</button>'+
-          '<button data-act="verify">Verify (2nd channel)</button>'+
-          '<button data-act="report">Report</button>'+
-          '<button data-act="reject">Reject</button>'+
+          Object.keys(ACTION_LABEL).map(function(a){ return '<button data-act="'+a+'">'+ACTION_LABEL[a]+'</button>'; }).join("")+
         '</div><div class="resbox"></div></div>';
     });
     html += '</div>'+
@@ -643,32 +654,51 @@
           if (state.defense[id]) return;
           var act = btn.getAttribute("data-act");
           var correct = (act===mail.action);
-          state.defense[id] = {action:act, correct:correct};
+          var acceptable = !correct && (mail.accept||[]).indexOf(act)>-1;
+          state.defense[id] = {action:act, correct:correct, acceptable:acceptable};
           var gained = 0;
           if (correct){
             state.streak++; state.maxStreak = Math.max(state.maxStreak, state.streak);
             var bonus = state.streak>=3 ? 10 : 0;
             gained = 15 + bonus; addPoints(gained);
+          } else if (acceptable){
+            gained = 8; addPoints(gained);   // safe, but not the best call: streak is kept, not extended
           } else {
             state.streak = 0;
           }
           state.defenseScore = Object.keys(state.defense).filter(function(k){return state.defense[k].correct;}).length;
           save();
-          mailEl.classList.add("answered");
-          var box = $(".resbox", mailEl);
-          box.innerHTML = '<div class="result '+(correct?"ok":"bad")+'">'+
-            (correct?"✅ Correct (+"+gained+" pts). ":"✖ Not optimal – streak reset. ")+
-            '<b>'+mail.type+'.</b> '+mail.why+'</div>';
-          $$(".actions button", mailEl).forEach(function(b){b.disabled=true;b.style.opacity=.5;});
+          markAnswered(mailEl, mail, state.defense[id], gained);
           $("#comboBar").innerHTML = comboText();
           updateProgress();
         };
       });
     });
+    $$(".mail", sec).forEach(function(mailEl){
+      var id = mailEl.getAttribute("data-mail");
+      if (state.defense[id]) markAnswered(mailEl, INBOX.filter(function(x){return x.id===id;})[0], state.defense[id], null);
+    });
     $("#toPost").onclick=function(){
       if (Object.keys(state.defense).length < INBOX.length){ toast("Please decide on every message ("+Object.keys(state.defense).length+"/"+INBOX.length+")."); return; }
       renderSurvey("post"); show("survey-post");
     };
+  }
+  // gained = points just earned, or null when re-rendering an earlier answer
+  function markAnswered(mailEl, mail, ans, gained){
+    var pts = gained!=null ? ' (+'+gained+' pts)' : '';
+    var bestLabel = '<b>Best action: '+ACTION_LABEL[mail.action]+'.</b> ';
+    mailEl.classList.add("answered");
+    $(".resbox", mailEl).innerHTML = ans.correct
+      ? '<div class="result ok">✅ Correct'+pts+'. <b>'+mail.type+'.</b> '+mail.why+'</div>'
+      : ans.acceptable
+        ? '<div class="result meh">👍 Safe, but not the best call'+pts+'. '+bestLabel+mail.why+'</div>'
+        : '<div class="result bad">✖ '+(mail.attack?'Not safe':'Over-cautious – this one is genuine')+(gained!=null?' – streak reset':'')+'. <b>'+mail.type+'.</b> '+bestLabel+mail.why+'</div>';
+    $$(".actions button", mailEl).forEach(function(b){
+      var a = b.getAttribute("data-act");
+      b.disabled = true;
+      b.classList.toggle("chosen", a===ans.action);
+      b.classList.toggle("best", a===mail.action);
+    });
   }
   function comboText(){
     var fire = state.streak>=3 ? " 🔥 bonus active!" : "";
@@ -681,7 +711,8 @@
      ========================================================================= */
   function renderResult(){
     var sec = $("#result");
-    var defPct = Math.round(state.defenseScore / INBOX.length * 100);
+    var defSafe = Object.keys(state.defense).filter(function(k){ return state.defense[k].correct || state.defense[k].acceptable; }).length;
+    var defPct = Math.round(defSafe / INBOX.length * 100);
     var totalKeys = keysTotal();
     var keysGot = keysCollected();
     var gateOpen = keysGot>=totalKeys;
@@ -714,12 +745,12 @@
       '</div>'+
       '<div class="grid three" style="margin:18px 0">'+
         statTile("⭐", String(state.points), "total points") +
-        statTile("🛡️", defPct+"%", "defense correct") +
+        statTile("🛡️", defPct+"%", "messages handled safely") +
         statTile("🔥", String(state.maxStreak), "best streak") +
       '</div>'+
       '<div class="card"><h3>Your badges</h3><div class="badge-grid">'+badges+'</div></div>'+
       '<div class="card" style="margin-top:18px"><h3>The damage you prevented</h3>'+
-        '<p class="note">In the defense level you handled '+state.defenseScore+' of '+INBOX.length+' messages correctly. In reality, every correct decision prevents possible damage – from data loss to business disruption.</p></div>'+
+        '<p class="note">In the defense level you handled '+defSafe+' of '+INBOX.length+' messages safely – '+state.defenseScore+' of them with the best action. In reality, every safe decision prevents possible damage – from data loss to business disruption.</p></div>'+
       '<h3 style="margin-top:28px">🏆 Top teams</h3><div class="lb">'+
         top.map(function(r,i){ return '<div class="lb-row top'+(i+1)+'">'+
           '<div class="lb-rank">'+(i+1)+'</div><div class="lb-name">'+r.team+(r.me?' <span class="badge on">you</span>':'')+'</div>'+
@@ -727,14 +758,17 @@
           '<div class="lb-bar"><div style="width:'+Math.round(r.score/maxScore*100)+'%"></div></div></div>'; }).join("")+
       '</div>'+
       (top.some(function(r){return r.me;})?'<p class="note" style="margin-top:10px">Strong – your team is in the top '+D.config.topTeamsVisible+'!</p>':'<p class="note" style="margin-top:10px">Your rank stays private. Only the top '+D.config.topTeamsVisible+' are shown.</p>')+
-      '<div style="margin-top:26px" class="card"><h3>For the test facilitator</h3>'+
-        '<p class="note">All answers (pre/post incl. self-assessment, defense, feedback, points) can be exported anonymised. A reset starts a fresh season run on this device.</p>'+
+      '<p class="note">Prototype: the scores of the other teams are demo values.</p>'+
+      '<div style="margin-top:26px" class="card facilitator"><h3>For the test facilitator</h3>'+
+        '<p class="note">All answers (pre/post incl. self-assessment, missions, defense, feedback, points) can be exported anonymised. Run ID: <b>'+(state.runId||"–")+'</b>.</p>'+
+        '<p class="export-warn'+(state.exported?" done":"")+'" id="expWarn">'+(state.exported?"✓ Results exported.":"⚠️ Answers are only kept in this browser tab – export before closing it.")+'</p>'+
         '<button class="btn sm" id="expBtn">📊 Export results as CSV</button> '+
         '<button class="btn sm ghost" id="resetBtn" style="border:1px solid var(--line);color:var(--ink-soft);background:#fff">↻ Reset for new season</button></div>'+
       '</div>';
     $("#expBtn").onclick = exportCSV;
     $("#resetBtn").onclick = function(){
-      if (!confirm("Reset all progress on this device for a new season run?")) return;
+      if (!confirm("Reset all progress on this device for a new season run?"+(state.exported?"":"\n\nThe results have NOT been exported yet."))) return;
+      resetting = true;
       try { sessionStorage.removeItem("imoah"); } catch(e){}
       location.reload();
     };
@@ -755,7 +789,13 @@
 
   /* ---------- CSV export ---------- */
   function exportCSV(){
+    var now = new Date();
     var rows = [["field","value"]];
+    rows.push(["run_id", state.runId||""]);
+    rows.push(["app_version", APP_VERSION]);
+    rows.push(["started_at", state.startedAt||""]);
+    rows.push(["exported_at", now.toISOString()]);
+    rows.push(["duration_min", state.startedAt ? Math.round((now - new Date(state.startedAt))/60000) : ""]);
     rows.push(["team", state.team||""]);
     rows.push(["season", D.config.season]);
     rows.push(["points", state.points]);
@@ -763,13 +803,21 @@
     rows.push(["keys_collected", keysCollected()+"/"+keysTotal()]);
     preExportRows().forEach(function(r){ rows.push(r); });
     D.surveys.post.forEach(function(q){ rows.push(["post_"+q.id, labelOf(q,state.post[q.id])]); rows.push(["post_conf_"+q.id, state.postConf[q.id]!=null?state.postConf[q.id]+1:""]); rows.push(["post_correct_"+q.id, state.post[q.id]===q.correct?"1":"0"]); });
-    MODULES.forEach(function(m){ rows.push(["mod_done_"+m.id, state.missionDone[m.id]?"1":"0"]); rows.push(["mod_key_"+m.id, state.keys[m.id]?"1":"0"]); rows.push(["mod_hints_"+m.id, state.hints[m.id]||0]); });
-    INBOX.forEach(function(m){ var a=state.defense[m.id]; rows.push(["def_"+m.id, a?a.action:""]); rows.push(["def_correct_"+m.id, a&&a.correct?"1":"0"]); });
+    MODULES.forEach(function(m){
+      rows.push(["mod_done_"+m.id, state.missionDone[m.id]?"1":"0"]); rows.push(["mod_key_"+m.id, state.keys[m.id]?"1":"0"]); rows.push(["mod_hints_"+m.id, state.hints[m.id]||0]);
+      // per step: risk of the chosen option (3 = strongest building block recognised)
+      var mp = (state.missionPicks||{})[m.id] || [];
+      m.mission.steps.forEach(function(s,i){ rows.push(["mod_step"+(i+1)+"_risk_"+m.id, mp[i]!=null?mp[i]:""]); rows.push(["mod_step"+(i+1)+"_correct_"+m.id, mp[i]===3?"1":(mp[i]!=null?"0":"")]); });
+      if (m.mission.steps.length) rows.push(["mod_score_"+m.id, mp.length ? mp.filter(function(r){return r===3;}).length+"/"+m.mission.steps.length : ""]);
+    });
+    INBOX.forEach(function(m){ var a=state.defense[m.id]; rows.push(["def_"+m.id, a?a.action:""]); rows.push(["def_correct_"+m.id, a&&a.correct?"1":"0"]); rows.push(["def_quality_"+m.id, a ? (a.correct?2:(a.acceptable?1:0)) : ""]); });
     D.surveys.feedback.forEach(function(f){ rows.push(["fb_"+f.id, state.feedback[f.id]||""]); });
     var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(","); }).join("\n");
     var blob = new Blob(["﻿"+csv], {type:"text/csv;charset=utf-8"});
     var a = document.createElement("a"); a.href=URL.createObjectURL(blob);
-    a.download = "imoah_results_"+(state.team||"team").replace(/\s+/g,"_")+".csv"; a.click();
+    a.download = "imoah_"+(state.runId||"run")+"_"+(state.team||"team").replace(/\s+/g,"_")+".csv"; a.click();
+    state.exported = true; save();
+    var w = $("#expWarn"); if (w){ w.className = "export-warn done"; w.textContent = "✓ Results exported."; }
     toast("CSV exported.");
   }
   function labelOf(q,i){ return i!=null ? q.options[i] : ""; }
@@ -791,6 +839,13 @@
       show(id);
     };});
   }
+
+  // Progress lives only in this tab: warn before closing it with unexported answers
+  var resetting = false;
+  window.addEventListener("beforeunload", function(e){
+    if (resetting || !state.started || state.exported) return;
+    e.preventDefault(); e.returnValue = "";
+  });
 
   document.addEventListener("DOMContentLoaded", function(){
     buildNav();

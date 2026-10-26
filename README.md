@@ -19,7 +19,7 @@ action. No real tools, templates or attack instructions are taught on purpose
 - **Team leaderboard** (only top 3 visible) and a personal evaluation
 - **CSV export** of all answers for the test facilitator
 
-Unlocked for the test phase: **Module 1 (Phishing)** and **Module 3 (CEO fraud)**.
+All five modules are playable; module 5 (Ransomware) opens once 4 keys are collected. Expert videos are still missing for module 3 (placeholder shown).
 
 ## View locally
 
@@ -55,7 +55,22 @@ css/style.css       Design in ManpowerGroup colours
 js/data.js          Surveys & configuration
 js/modules.js       Modules & defense level
 js/app.js           Flow logic (vanilla JS)
+tools/              merge_results.py – merges the CSV exports
 ```
+
+## Evaluation (test phase)
+
+1. At the end of each run, click **Export results as CSV** on the result page.
+   The file is named `imoah_<RUN-ID>_<team>.csv`. The page warns before the tab is closed without an export.
+2. Collect all exports in one folder and merge them into one table (one row per run):
+   ```
+   python3 tools/merge_results.py path/to/exports
+   ```
+   This writes `merged_results.csv` into that folder (opens in Excel / SPSS / R).
+
+Useful columns: `run_id`, `started_at`, `duration_min`, `pre_*` (survey), `mod_step<n>_correct_<module>` and
+`mod_score_<module>` (did the participant spot the strongest building block?), `def_quality_<mail>`
+(2 = best action, 1 = safe but not best, 0 = unsafe), `post_*`, `post_conf_*`, `fb_*`.
 
 ## Notes
 
