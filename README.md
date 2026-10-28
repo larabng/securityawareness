@@ -11,7 +11,7 @@ action. No real tools, templates or attack instructions are taught on purpose
 ## What's inside
 
 - **Pre-survey** (mandatory): anonymous 20-question cybersecurity survey – demographics, self-assessment sliders, an anchoring estimate, experience, behaviour matrices, scenario questions and a dual matrix (relevance vs. preparedness)
-- **Expert videos** per module (placeholders until the real videos are available)
+- **Expert videos** per module (animated explainers, in `media/`)
 - **Hacker missions** in a dark terminal interface + the two meters (loot value / company damage)
 - **Reveal** "What would have stopped you?" per module
 - **Defense level**: an inbox with attacks and harmless messages
@@ -19,7 +19,7 @@ action. No real tools, templates or attack instructions are taught on purpose
 - **Team leaderboard** (only top 3 visible) and a personal evaluation
 - **CSV export** of all answers for the test facilitator
 
-All five modules are playable; module 5 (Ransomware) opens once 4 keys are collected. Expert videos are still missing for module 3 (placeholder shown).
+All five modules are playable; module 5 (Ransomware) opens once 4 keys are collected. All five modules have an expert video.
 
 ## View locally
 

@@ -113,7 +113,7 @@ window.MODULES = [
     loot: "Candidate profiles, possibly payment", lootLevel: 4,
     why: "Rising sharply in Switzerland: 970 reports to the NCSC in 2025 (2023: 484).",
     video: {
-      expert: "Finance", duration: "3–5 min", url: "",
+      expert: "Finance", duration: "approx. 6 min", url: "media/modul3_ceo_fraud.mp4",
       summary: "Why an instruction “from the top” is so hard to question – and how the approval process protects you.",
       points: [
         ["What does the attack want?", "To trigger an urgent release of data or a payment before anyone asks questions."],
