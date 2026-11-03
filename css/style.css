@@ -387,3 +387,17 @@ textarea.sv-input { resize:vertical; }
 .export-warn { background:#fff4e5; color:#8a5300; border:1px solid #f6d3a3; border-radius:9px;
   padding:9px 12px; font-size:14px; font-weight:600; }
 .export-warn.done { background:#e7f5ec; color:#1f7a3d; border-color:#bfe3cb; }
+
+/* Survey: the four actions of a scenario side by side on wider screens */
+@media (min-width:641px){ .sc-opts { grid-template-columns:1fr 1fr; } }
+/* Survey matrices on phones: one block per row, scale labels under the radios */
+@media (max-width:640px){
+  .mx:not(.dual) { min-width:0; }
+  .mx:not(.dual) thead { display:none; }
+  .mx:not(.dual) tbody tr { display:grid; grid-template-columns:repeat(var(--n),1fr); padding:12px 0 8px; border-top:1px solid var(--line); }
+  .mx:not(.dual) td { border-top:none; padding:4px 2px; display:flex; flex-direction:column; align-items:center; gap:4px;
+    font-size:11px; line-height:1.2; color:var(--ink-soft); }
+  .mx:not(.dual) td.mx-row { grid-column:1/-1; display:block; min-width:0; padding:0 0 6px; font-size:14px; font-weight:600; color:var(--ink); }
+  .mx:not(.dual) td[data-label]::after { content:attr(data-label); text-align:center; }
+  .mx:not(.dual) tbody tr:hover td { background:none; }
+}
