@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Team Mission — Inside the Mind of a Hacker</title>
-<meta name="description" content="A cooperative phishing mission for two players: each sees only half the evidence and must talk to solve it together.">
+<meta name="description" content="A cooperative phishing mission: the team leader answers everything but sees no evidence; each member holds a piece. They must talk to solve it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23002A5C'/><g fill='%23EE8A1D'><rect x='24' y='40' width='8' height='30' rx='4'/><rect x='38' y='28' width='8' height='42' rx='4' fill='%234E8ABE'/><rect x='52' y='20' width='8' height='50' rx='4' fill='%2377AE9A'/><rect x='66' y='34' width='8' height='36' rx='4' fill='%235BA862'/></g></svg>">
@@ -45,47 +45,53 @@
   .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .hidden{display:none !important}
   /* role picker */
-  .roles{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
-  .role-pick{cursor:pointer;text-align:left;border:2px solid var(--line);border-radius:16px;padding:26px;background:#fff;transition:all .15s;font-family:inherit}
+  .roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px}
+  .role-pick{cursor:pointer;text-align:left;border:2px solid var(--line);border-radius:16px;padding:24px;background:#fff;transition:all .15s;font-family:inherit}
   .role-pick:hover{border-color:var(--blue);background:#f5faff;transform:translateY(-2px)}
-  .role-pick .ic{font-size:40px}
-  .role-pick h3{margin:10px 0 4px;font-size:26px}
-  .role-pick .who{color:var(--ink-soft);font-size:15px}
-  /* role view */
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin-top:22px}
+  .role-pick.leader{border-color:var(--orange)}
+  .role-pick.leader:hover{background:#fff6ec}
+  .role-pick .ic{font-size:38px}
+  .role-pick h3{margin:10px 0 4px;font-size:23px}
+  .role-pick .who{color:var(--ink-soft);font-size:14px}
+  .role-pick .tag{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .tag.ans{background:#fff1e0;color:var(--orange-d)}
+  .tag.info{background:#eaf2fb;color:#0b4a86}
+  /* panels */
   .panel-title{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:20px;margin-bottom:12px}
-  /* email mock */
   .mail{border:1px solid var(--line);border-radius:12px;overflow:hidden}
   .mail .mh{background:#0b2742;color:#cfe6ff;padding:12px 16px;font-size:13px;font-family:'Consolas',monospace}
   .mail .mh b{color:#fff}
   .mail .mb{padding:18px;background:#fff}
   .mail .row{display:flex;gap:8px;font-size:14px;margin-bottom:6px}
-  .mail .row .k{color:var(--ink-soft);min-width:78px}
+  .mail .row .k{color:var(--ink-soft);min-width:84px}
   .mail .btn-fake{display:inline-block;margin-top:10px;background:var(--blue);color:#fff;padding:10px 18px;border-radius:8px;font-weight:600;font-size:14px}
   .note{font-size:13px;color:var(--ink-soft)}
-  .warnbox{background:#fff6ec;border:1px solid var(--orange);border-radius:10px;padding:12px 14px;font-size:14px;margin-top:14px}
+  .callout{border-radius:12px;padding:16px 20px;font-size:16px;margin:8px 0 2px}
+  .callout.leader{background:var(--navy);color:#fff}
+  .callout.leader b{color:var(--orange)}
+  .callout.member{background:#eaf2fb;border-left:4px solid var(--blue);color:var(--ink)}
+  .callout.member b{color:#0b4a86}
+  .relaybox{background:#fff6ec;border:1px solid var(--orange);border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
   /* checklist */
   .check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;cursor:pointer;transition:all .15s}
   .check:hover{border-color:var(--blue);background:#f5faff}
   .check.on{border-color:var(--green);background:#eef8f0}
   .check input{margin-top:4px;width:18px;height:18px}
   .check .t{font-size:15px}
-  .ask{background:#eaf2fb;border-left:4px solid var(--blue);border-radius:8px;padding:12px 14px;margin-bottom:10px}
-  .ask .q{font-weight:600;font-size:15px}
-  .ask .h{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .who-tag{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:8px;white-space:nowrap}
+  .who-tag.a{background:#eaf2fb;color:#0b4a86}
+  .who-tag.b{background:#e7f1ec;color:#2f6f52}
   .decision{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .decision button{border:1px solid var(--line);background:#f6f9fc;border-radius:10px;padding:12px 18px;cursor:pointer;
     font-family:inherit;font-size:15px;font-weight:600;color:var(--ink)}
   .decision button:hover{border-color:var(--blue);color:var(--blue)}
   .decision button.pick{border-color:var(--orange);background:#fff6ec;color:var(--navy)}
   .reveal{background:linear-gradient(180deg,#fff,#f1f7ff);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:14px;padding:24px;margin-top:22px}
-  .reveal h3{color:var(--navy)}
   .reveal.bad{border-left-color:var(--red)}
+  .reveal h3{color:var(--navy)}
   .stops li{margin-bottom:6px}
-  .split-note{background:var(--navy);color:#fff;border-radius:12px;padding:16px 20px;font-size:15px;margin-top:8px}
-  .split-note b{color:var(--orange)}
   footer{background:var(--navy);color:#bcd1e8;padding:22px 0;font-size:13px;margin-top:40px}
-  @media(max-width:760px){.grid2{grid-template-columns:1fr}.roles{grid-template-columns:1fr}}
+  @media(max-width:820px){.roles{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -99,46 +105,56 @@
 
   <!-- INTRO / ROLE PICKER -->
   <section id="intro">
-    <div class="eyebrow">Cooperative mission · 2 players</div>
-    <h1 style="font-size:40px">One attack, two halves of the truth</h1>
-    <p class="lead">This phishing message landed in a recruiter’s inbox. <b>Neither of you can judge it alone.</b> One of you sees the technical side (sender, links, timing); the other sees the content (wording, request, urgency). Open your own role on your own device, work through your panel, then <b>talk to each other</b> to answer what only your partner can see — and decide together.</p>
+    <div class="eyebrow">Cooperative mission · team of 3</div>
+    <h1 style="font-size:40px">Only the leader answers — but the leader can’t see the evidence</h1>
+    <p class="lead">A phishing message reached a recruiter’s inbox. The <b>team leader</b> holds the controls and is the only one who can mark the warning signs and decide — but sees <b>none</b> of the message. Two <b>members</b> each hold one half of the evidence and can only <b>tell</b> the leader what they see. The only way through is to talk.</p>
     <div class="roles">
-      <button class="role-pick" onclick="chooseRole('A')">
-        <div class="ic">🔎</div><h3>Role A — Technical view</h3>
-        <div class="who">You see the sender address, the real link target and the send time. You cannot read the message body.</div>
+      <button class="role-pick leader" onclick="chooseRole('leader')">
+        <div class="ic">🧭</div><h3>Team leader</h3>
+        <div class="who">You answer every question and make the call — but you can’t see the email. You must ask both members.</div>
+        <span class="tag ans">Answers everything</span>
       </button>
-      <button class="role-pick" onclick="chooseRole('B')">
-        <div class="ic">📨</div><h3>Role B — Content view</h3>
-        <div class="who">You see the subject, the message wording and what it asks for. You cannot see the sender address or where the link really goes.</div>
+      <button class="role-pick" onclick="chooseRole('a')">
+        <div class="ic">🔎</div><h3>Member — Technical</h3>
+        <div class="who">You see the sender, the real link target and the send time. Read them out to your leader.</div>
+        <span class="tag info">Holds info only</span>
+      </button>
+      <button class="role-pick" onclick="chooseRole('b')">
+        <div class="ic">📨</div><h3>Member — Content</h3>
+        <div class="who">You see the subject, the wording and what it asks for. Read them out to your leader.</div>
+        <span class="tag info">Holds info only</span>
       </button>
     </div>
-    <p class="note" style="margin-top:18px">Tip: two people, two phones. Each picks a different role. You can also share role links directly: add <b>?role=A</b> or <b>?role=B</b> to this page’s URL.</p>
+    <p class="note" style="margin-top:18px">Three people, three devices — each picks a different role. You can also deep-link roles: add <b>?role=leader</b>, <b>?role=a</b> or <b>?role=b</b> to the URL.</p>
   </section>
 
-  <!-- ROLE VIEW -->
-  <section id="roleView" class="hidden">
-    <div class="eyebrow" id="roleEyebrow"></div>
-    <h1 id="roleHeading" style="font-size:34px"></h1>
-    <div class="split-note" id="splitNote"></div>
-    <div class="grid2">
-      <!-- left: what you see -->
-      <div class="card">
-        <div class="panel-title" id="panelTitle"></div>
-        <div id="panelBody"></div>
-      </div>
-      <!-- right: your tasks -->
-      <div class="card">
-        <div class="panel-title">✅ Mark every red flag you can confirm</div>
-        <div id="checkList"></div>
-        <div class="panel-title" style="margin-top:20px">💬 Only your partner can answer these</div>
-        <div id="askList"></div>
-      </div>
+  <!-- MEMBER VIEW (info only) -->
+  <section id="memberView" class="hidden">
+    <div class="eyebrow" id="mEyebrow"></div>
+    <h1 id="mHeading" style="font-size:34px"></h1>
+    <div class="callout member" id="mCallout"></div>
+    <div class="card" style="margin-top:18px">
+      <div class="panel-title" id="mPanelTitle"></div>
+      <div id="mPanelBody"></div>
+    </div>
+    <div class="relaybox" id="mRelay"></div>
+    <div style="margin-top:20px"><button class="btn ghost" onclick="restart()">↺ Switch role</button></div>
+  </section>
+
+  <!-- LEADER VIEW (answers only) -->
+  <section id="leaderView" class="hidden">
+    <div class="eyebrow">Team leader · you make the call</div>
+    <h1 style="font-size:34px">🧭 Gather the evidence from your members</h1>
+    <div class="callout leader">You can’t see the email. Your <b>Technical</b> member knows the sender &amp; links; your <b>Content</b> member knows the wording. Ask them, then mark what they confirm.</div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="panel-title">✅ Warning signs — mark each one your members confirm</div>
+      <div id="checkList"></div>
     </div>
 
-    <!-- shared decision -->
-    <div class="card" style="margin-top:22px">
-      <h3 style="font-family:var(--display)">Decide together</h3>
-      <p class="note">Once you’ve shared what each of you sees, agree on one action and select it on either device.</p>
+    <div class="card" style="margin-top:18px">
+      <h3 style="font-family:var(--display)">Make the call</h3>
+      <p class="note">With both members’ input, decide what the recruiter should do.</p>
       <div class="decision" id="decision">
         <button data-act="process">Process normally</button>
         <button data-act="verify">Verify (2nd channel)</button>
@@ -149,148 +165,146 @@
     </div>
 
     <div id="revealBox"></div>
-    <div style="margin-top:20px"><button class="btn ghost" onclick="restart()">↺ Start over / switch role</button></div>
+    <div style="margin-top:20px"><button class="btn ghost" onclick="restart()">↺ Switch role</button></div>
   </section>
 
 </main>
 
-<footer><div class="wrap">Prototype · cooperative format (asymmetric information, no server needed) · WI-Projekt HS26 · ManpowerGroup</div></footer>
+<footer><div class="wrap">Prototype · cooperative format — leader answers, members inform, no server needed · WI-Projekt HS26 · ManpowerGroup</div></footer>
 
 <script>
 /* =======================================================================
-   One shared scenario, split into two role views.
-   The "ask your partner" items on each side can ONLY be answered from the
-   OTHER role's panel — that is what forces the conversation.
+   One shared scenario. The LEADER holds all the questions but no evidence.
+   Each MEMBER holds one half of the evidence and can only report it.
+   The leader's checklist items are tagged with the member who can confirm
+   them — so the leader must consult BOTH members to answer them all.
    ======================================================================= */
 var SCENARIO = {
   correct: "report",
-  A: {
-    eyebrow: "Role A · Technical view",
-    heading: "🔎 What the headers reveal",
-    split: "You hold the <b>technical</b> half. Your partner (Role B) can read the message itself — ask them what it says.",
-    panelTitle: "📡 Message metadata",
-    panel:
-      '<div class="mail"><div class="mh">'+
-        'Display name: <b>TalentBridge Portal</b><br>'+
-        'From: <b>no-reply@talentbridge-login.ch</b><br>'+
-        'Reply-To: support@mail-secure-verify.ch<br>'+
-        'Sent: <b>03:12</b> (local time)'+
-      '</div><div class="mb">'+
-        '<div class="row"><span class="k">Button:</span><span>“Confirm account” →</span></div>'+
-        '<div class="row"><span class="k">Links to:</span><span><b>http://tb-portal.verify-now.ch/login</b></span></div>'+
-        '<div class="row"><span class="k">Official portal:</span><span>https://portal.talentbridge.ch</span></div>'+
-      '</div></div>'+
-      '<div class="warnbox">You can’t see the wording of the message — only your partner can.</div>',
-    checks: [
-      "The sender domain (talentbridge-<b>login.ch</b>) is not the official one (talentbridge.ch)",
-      "The button really leads to a different domain (verify-now.ch), not the portal",
-      "The email was sent in the middle of the night (03:12)"
-    ],
-    asks: [
-      { q: "What is the message actually asking the recruiter to do?", h: "You can’t read the body — ask Role B." },
-      { q: "Is there any time pressure or threat in the wording?", h: "Only Role B can see this." }
-    ]
+  members: {
+    a: {
+      eyebrow: "Member · Technical view",
+      heading: "🔎 What the headers reveal",
+      callout: "You hold the <b>technical</b> half. You can’t answer anything — your job is to <b>read these details out to your team leader</b>.",
+      panelTitle: "📡 Message metadata",
+      panel:
+        '<div class="mail"><div class="mh">'+
+          'Display name: <b>TalentBridge Portal</b><br>'+
+          'From: <b>no-reply@talentbridge-login.ch</b><br>'+
+          'Reply-To: support@mail-secure-verify.ch<br>'+
+          'Sent: <b>03:12</b> (local time)'+
+        '</div><div class="mb">'+
+          '<div class="row"><span class="k">Button:</span><span>“Confirm account” →</span></div>'+
+          '<div class="row"><span class="k">Links to:</span><span><b>http://tb-portal.verify-now.ch/login</b></span></div>'+
+          '<div class="row"><span class="k">Official portal:</span><span>https://portal.talentbridge.ch</span></div>'+
+        '</div></div>',
+      relay: "💬 Tell your leader: the sender domain, where the button really leads, and what time it was sent. Your Content teammate has the wording — you don’t."
+    },
+    b: {
+      eyebrow: "Member · Content view",
+      heading: "📨 What the message says",
+      callout: "You hold the <b>content</b> half. You can’t answer anything — your job is to <b>read the message out to your team leader</b>.",
+      panelTitle: "✉️ The message",
+      panel:
+        '<div class="mail"><div class="mh">Subject: <b>Action required: confirm your recruiter account</b></div>'+
+        '<div class="mb">'+
+          '<p style="margin:0 0 10px">Dear user,</p>'+
+          '<p style="margin:0 0 10px">We detected a problem with your recruiter account. Your access will be <b>suspended within 30 minutes</b> unless you confirm your details now.</p>'+
+          '<p style="margin:0 0 10px">Please click the button below and sign in to keep your account active.</p>'+
+          '<span class="btn-fake">Confirm account</span>'+
+          '<p style="margin:12px 0 0;color:#51606E;font-size:13px">If you do not act, your candidates and messages will be lost.</p>'+
+        '</div></div>',
+      relay: "💬 Tell your leader: the greeting, the deadline, and exactly what the message asks the reader to do. Your Technical teammate has the sender &amp; link — you don’t."
+    }
   },
-  B: {
-    eyebrow: "Role B · Content view",
-    heading: "📨 What the message says",
-    split: "You hold the <b>content</b> half. Your partner (Role A) can see the sender and the real link — ask them where it comes from.",
-    panelTitle: "✉️ The message",
-    panel:
-      '<div class="mail"><div class="mh">Subject: <b>Action required: confirm your recruiter account</b></div>'+
-      '<div class="mb">'+
-        '<p style="margin:0 0 10px">Dear user,</p>'+
-        '<p style="margin:0 0 10px">We detected a problem with your recruiter account. Your access will be <b>suspended within 30 minutes</b> unless you confirm your details now.</p>'+
-        '<p style="margin:0 0 10px">Please click the button below and sign in to keep your account active.</p>'+
-        '<span class="btn-fake">Confirm account</span>'+
-        '<p style="margin:12px 0 0;color:#51606E;font-size:13px">If you do not act, your candidates and messages will be lost.</p>'+
-      '</div></div>'+
-      '<div class="warnbox">You can’t see who really sent this or where the button leads — only your partner can.</div>',
-    checks: [
-      "A generic greeting (“Dear user”) instead of your name",
-      "Artificial urgency — “suspended within 30 minutes”",
-      "It asks you to sign in through a button in the email"
-    ],
-    asks: [
-      { q: "Does the sender address match the real portal (talentbridge.ch)?", h: "You can’t see the address — ask Role A." },
-      { q: "Where does the “Confirm account” button actually lead?", h: "Only Role A can see the link target." }
-    ]
-  }
+  // Leader's questions, each tagged with the member who can confirm it
+  checks: [
+    { who:"a", label:"Technical", t:"The sender domain (talentbridge-<b>login.ch</b>) is not the official one (talentbridge.ch)" },
+    { who:"a", label:"Technical", t:"The button leads to a different domain (verify-now.ch), not the portal" },
+    { who:"a", label:"Technical", t:"The email was sent in the middle of the night (03:12)" },
+    { who:"b", label:"Content",   t:"A generic greeting (“Dear user”) instead of the recruiter’s name" },
+    { who:"b", label:"Content",   t:"Artificial urgency — “suspended within 30 minutes”" },
+    { who:"b", label:"Content",   t:"It asks the reader to sign in through a button in the email" }
+  ]
 };
 
 var state = { role:null, decision:null };
-
 function qparam(n){ try{return new URLSearchParams(location.search).get(n);}catch(e){return null;} }
 
 function chooseRole(r){
-  state.role = r; state.decision = null;
-  var d = SCENARIO[r];
+  state.role=r; state.decision=null;
   document.getElementById("intro").classList.add("hidden");
-  document.getElementById("roleView").classList.remove("hidden");
-  document.getElementById("roleChip").textContent = (r==="A"?"🔎 Role A":"📨 Role B");
-  document.getElementById("roleEyebrow").textContent = d.eyebrow;
-  document.getElementById("roleHeading").textContent = d.heading;
-  document.getElementById("splitNote").innerHTML = d.split;
-  document.getElementById("panelTitle").textContent = d.panelTitle;
-  document.getElementById("panelBody").innerHTML = d.panel;
-  // checklist
-  document.getElementById("checkList").innerHTML = d.checks.map(function(c,i){
-    return '<label class="check"><input type="checkbox" data-c="'+i+'"><span class="t">'+c+'</span></label>';
-  }).join("");
-  Array.prototype.forEach.call(document.querySelectorAll("#checkList .check"), function(lab){
-    lab.querySelector("input").addEventListener("change", function(){
-      lab.classList.toggle("on", this.checked);
-    });
-  });
-  // ask-partner
-  document.getElementById("askList").innerHTML = d.asks.map(function(a){
-    return '<div class="ask"><div class="q">'+a.q+'</div><div class="h">'+a.h+'</div></div>';
-  }).join("");
-  // decision
-  state.decision = null;
-  Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(b){
-    b.classList.remove("pick"); b.disabled=false;
-    b.onclick = function(){
-      Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(x){x.classList.remove("pick");});
-      b.classList.add("pick"); state.decision = b.getAttribute("data-act");
-      document.getElementById("revealBtn").disabled = false;
-    };
-  });
-  document.getElementById("revealBtn").disabled = true;
-  document.getElementById("revealBox").innerHTML = "";
-  document.getElementById("revealBtn").onclick = doReveal;
+  document.getElementById("memberView").classList.add("hidden");
+  document.getElementById("leaderView").classList.add("hidden");
+  if(r==="leader"){ renderLeader(); }
+  else { renderMember(r); }
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function renderMember(r){
+  var d = SCENARIO.members[r];
+  document.getElementById("memberView").classList.remove("hidden");
+  document.getElementById("roleChip").textContent = (r==="a"?"🔎 Technical":"📨 Content");
+  document.getElementById("mEyebrow").textContent = d.eyebrow;
+  document.getElementById("mHeading").textContent = d.heading;
+  document.getElementById("mCallout").innerHTML = d.callout;
+  document.getElementById("mPanelTitle").textContent = d.panelTitle;
+  document.getElementById("mPanelBody").innerHTML = d.panel;
+  document.getElementById("mRelay").innerHTML = d.relay;
+}
+
+function renderLeader(){
+  document.getElementById("leaderView").classList.remove("hidden");
+  document.getElementById("roleChip").textContent = "🧭 Team leader";
+  document.getElementById("checkList").innerHTML = SCENARIO.checks.map(function(c,i){
+    return '<label class="check"><input type="checkbox" data-c="'+i+'">'+
+      '<span class="t"><span class="who-tag '+c.who+'">ask '+c.label+'</span>'+c.t+'</span></label>';
+  }).join("");
+  Array.prototype.forEach.call(document.querySelectorAll("#checkList .check"), function(lab){
+    lab.querySelector("input").addEventListener("change", function(){ lab.classList.toggle("on", this.checked); });
+  });
+  state.decision=null;
+  Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(b){
+    b.classList.remove("pick"); b.disabled=false;
+    b.onclick=function(){
+      Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(x){x.classList.remove("pick");});
+      b.classList.add("pick"); state.decision=b.getAttribute("data-act");
+      document.getElementById("revealBtn").disabled=false;
+    };
+  });
+  document.getElementById("revealBtn").disabled=true;
+  document.getElementById("revealBox").innerHTML="";
+  document.getElementById("revealBtn").onclick=doReveal;
+}
+
 function doReveal(){
-  var correct = state.decision === SCENARIO.correct;
-  var box = document.getElementById("revealBox");
-  box.innerHTML =
+  var correct = state.decision===SCENARIO.correct;
+  document.getElementById("revealBox").innerHTML =
     '<div class="reveal'+(correct?"":" bad")+'">'+
       '<h3>'+(correct?"✅ Correct — report it.":"✖ Not the safest call — this one should be reported.")+'</h3>'+
-      '<p>This was a phishing attempt, and the proof was <b>split between you</b>. On their own, each half looks explainable; together they are decisive:</p>'+
+      '<p>This was a phishing attempt, and the evidence was <b>spread across the team</b>. No single person could be sure:</p>'+
       '<ul class="stops">'+
-        '<li>🔎 <b>Role A saw</b> — a look-alike sender domain, a button that leads to a different site, and a 3 a.m. send time.</li>'+
-        '<li>📨 <b>Role B saw</b> — a generic greeting, a 30-minute deadline, and a request to sign in through the email.</li>'+
+        '<li>🔎 <b>Technical member</b> — a look-alike sender domain, a button that leads elsewhere, a 3 a.m. send time.</li>'+
+        '<li>📨 <b>Content member</b> — a generic greeting, a 30-minute deadline, a request to sign in through the email.</li>'+
+        '<li>🧭 <b>Leader</b> — could only mark these after asking both. That conversation is the exercise.</li>'+
       '</ul>'+
-      '<p style="margin-top:10px"><b>The habit:</b> don’t sign in through links in a message. Pause, check the context, verify through a known, independent channel, and report it.</p>'+
-      '<p class="note" style="margin-top:8px">Neither of you could be sure alone — only by talking did the full picture appear. That is the point of the team mission.</p>'+
+      '<p style="margin-top:10px"><b>The habit:</b> never sign in through links in a message. Pause, check the context, verify through a known, independent channel, and report it.</p>'+
     '</div>';
-  box.scrollIntoView({behavior:"smooth"});
+  document.getElementById("revealBox").scrollIntoView({behavior:"smooth"});
 }
 
 function restart(){
   state={role:null,decision:null};
-  document.getElementById("roleView").classList.add("hidden");
+  document.getElementById("memberView").classList.add("hidden");
+  document.getElementById("leaderView").classList.add("hidden");
   document.getElementById("intro").classList.remove("hidden");
   document.getElementById("roleChip").textContent="Prototype";
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// deep link ?role=A / ?role=B
 (function(){
-  var r=(qparam("role")||qparam("rolle")||"").toUpperCase();
-  if(r==="A"||r==="B") chooseRole(r);
+  var r=(qparam("role")||qparam("rolle")||"").toLowerCase();
+  if(r==="leader"||r==="a"||r==="b") chooseRole(r);
 })();
 </script>
 </body>
