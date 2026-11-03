@@ -1,0 +1,12 @@
+{
+  "name": "inside-the-mind-of-a-hacker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cybersecurity awareness training prototype (WI-Projekt HS26). The site itself needs no build or install – this file is only for the browser test.",
+  "scripts": {
+    "test": "node tests/e2e.js"
+  },
+  "devDependencies": {
+    "puppeteer-core": "23.11.1"
+  }
+}

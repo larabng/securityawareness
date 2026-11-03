@@ -35,13 +35,17 @@ Just open `index.html` in a browser – no build, no installation needed.
 
 ## Edit content
 
-Everything is in two files, no code needed:
+All texts live in `content/` – plain data files, no code needed:
 
-- `js/data.js` – surveys (pre/post), feedback, teams, company name
-- `js/modules.js` – modules (videos, missions, reveals) and the defense inbox
+- `content/config.js` – title, company, season, teams
+- `content/surveys.js` – pre/post surveys, parallel scenarios, feedback
+- `content/modules.js` – modules (videos, missions, reveals, keys, badges)
+- `content/defense.js` – the defense inbox
+
+Icons are referenced by name (e.g. `icon: "mail"`); the available names are listed in `js/core/icons.js`.
 
 ### Add a video
-In `js/modules.js`, fill in `video.url` for the module:
+In `content/modules.js`, fill in `video.url` for the module:
 - YouTube: `url: "https://www.youtube.com/embed/VIDEO_ID"`
 - own file: put the video e.g. at `media/modul1.mp4` and set `url: "media/modul1.mp4"`
 
@@ -50,18 +54,42 @@ Set `available: true` on the module.
 
 ## Structure
 
+Vanilla HTML/CSS/JS without a build step. Every script adds its part to one global `App` object;
+`index.html` loads them in order (content first, then the app).
+
 ```
-index.html          Skeleton + sections
-css/style.css       Design in ManpowerGroup colours
-js/data.js          Surveys & configuration
-js/modules.js       Modules & defense level
-js/app.js           Flow logic (vanilla JS)
-tools/              merge_results.py – merges the CSV exports
+index.html            Page skeleton, loads styles and scripts
+content/              What participants see (see "Edit content")
+css/base.css          Design tokens, typography, layout, header/footer
+css/components.css    Buttons, cards, tags, stats, meters, keyring, form controls
+css/views.css         Start, surveys, modules, mission, defense, result
+js/core/util.js       App namespace, DOM helpers, toast
+js/core/icons.js      Inline SVG icons (Lucide subset, ISC licence)
+js/core/state.js      Run state (sessionStorage), points and keys
+js/core/measure.js    Survey model: items per run, scoring, summary measures
+js/views/*.js         One file per screen (+ widgets.js for shared pieces)
+js/export.js          CSV export
+js/main.js            Navigation (App.go) and start-up
+tools/                merge_results.py – merges the CSV exports
+tests/e2e.js          Browser test of a complete run
+media/                Expert videos
+```
+
+Design: a light "office" world (start, surveys, defense, result) and a dark "hacker" world (modules, missions);
+components adapt automatically inside an element with the class `dark`.
+
+### Test
+The browser test plays a complete run in headless Chrome and checks the gates, the locking and the CSV export:
+
+```
+npm install                  # once – installs puppeteer-core (uses your installed Chrome)
+python3 -m http.server 8000  # in a second terminal
+npm test
 ```
 
 ## Measuring the effect (pre / post)
 
-The surveys are built so the before/after comparison is clean (details in `js/data.js`):
+The surveys are built so the before/after comparison is clean (details in `content/surveys.js`):
 
 - **Same questions before and after** for everything we compare: self-assessment per threat (`prep`), how attractive a
   target one feels (`target`), attitude (`att`) and the warning-signs question (`k1`).

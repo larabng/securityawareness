@@ -11,6 +11,7 @@
    - difficulty: "easy" | "medium" | "hard"  → weights the points earned
    - key:   collectible reward per module; all keys open the "company gate"
    - badge: themed achievement shown on completion
+   - icon / badge.icon: name of an icon in js/core/icons.js
    - mission.steps[].hint: optional nudge (costs points), never the answer
    - requiresKeys: module stays locked until that many keys are collected
 
@@ -18,12 +19,12 @@
    available: true = playable. Module 5 additionally needs 4 keys (requiresKeys).
    ========================================================================= */
 
-window.MODULES = [
+CONTENT.modules = [
   {
-    id: "m1", number: 1, title: "Phishing and account takeover", icon: "✉️", available: true,
+    id: "m1", number: 1, title: "Phishing and account takeover", icon: "mail", available: true,
     difficulty: "easy",
-    key:   { name: "Mailbox key", icon: "🔑" },
-    badge: { name: "Phishing Spotter", icon: "🎯" },
+    key:   { name: "Mailbox key" },
+    badge: { name: "Phishing Spotter", icon: "crosshair" },
     loot: "Mailbox login credentials", lootLevel: 5,
     why: "The most common entry point. Humans are involved in around 60% of data breaches.",
     video: {
@@ -63,10 +64,10 @@ window.MODULES = [
   },
 
   {
-    id: "m2", number: 2, title: "Malware in application documents", icon: "📎", available: true,
+    id: "m2", number: 2, title: "Malware in application documents", icon: "paperclip", available: true,
     difficulty: "medium",
-    key:   { name: "HR workstation key", icon: "🔑" },
-    badge: { name: "Attachment Guard", icon: "📎" },
+    key:   { name: "HR workstation key" },
+    badge: { name: "Attachment Guard", icon: "file-check" },
     loot: "Remote access to the HR computer", lootLevel: 5,
     why: "Recruiters have to open attachments from strangers. Targeted campaigns against HR in 2025.",
     video: {
@@ -106,10 +107,10 @@ window.MODULES = [
   },
 
   {
-    id: "m3", number: 3, title: "CEO fraud", icon: "👔", available: true,
+    id: "m3", number: 3, title: "CEO fraud", icon: "briefcase", available: true,
     difficulty: "medium",
-    key:   { name: "Executive-floor key", icon: "🔑" },
-    badge: { name: "CEO-Fraud Shield", icon: "🛡️" },
+    key:   { name: "Executive-floor key" },
+    badge: { name: "CEO-Fraud Shield", icon: "shield-check" },
     loot: "Candidate profiles, possibly payment", lootLevel: 4,
     why: "Rising sharply in Switzerland: 970 reports to the NCSC in 2025 (2023: 484).",
     video: {
@@ -149,10 +150,10 @@ window.MODULES = [
   },
 
   {
-    id: "m4", number: 4, title: "Fake candidates and deepfakes", icon: "🎭", available: true,
+    id: "m4", number: 4, title: "Fake candidates and deepfakes", icon: "scan-face", available: true,
     difficulty: "medium",
-    key:   { name: "Identity key", icon: "🔑" },
-    badge: { name: "Deepfake Detector", icon: "🎭" },
+    key:   { name: "Identity key" },
+    badge: { name: "Deepfake Detector", icon: "eye" },
     loot: "Access to client systems, salary", lootLevel: 4,
     why: "Growing fast. Staffing agencies place people with clients and share the liability.",
     video: {
@@ -192,10 +193,10 @@ window.MODULES = [
   },
 
   {
-    id: "m5", number: 5, title: "Ransomware and data exfiltration", icon: "🔒", available: true,
+    id: "m5", number: 5, title: "Ransomware and data exfiltration", icon: "lock-keyhole", available: true,
     difficulty: "hard", requiresKeys: 4,
-    key:   { name: "Data-centre key", icon: "🔑" },
-    badge: { name: "Ransomware First Responder", icon: "🔒" },
+    key:   { name: "Data-centre key" },
+    badge: { name: "Ransomware First Responder", icon: "siren" },
     loot: "The entire data set, ransom", lootLevel: 5,
     why: "The greatest damage. ManpowerGroup franchise Lansing in 2025 with around 145,000 people affected.",
     video: {
@@ -233,21 +234,4 @@ window.MODULES = [
       stops: ["Stolen login → MFA, and report any click immediately", "Data copied out unnoticed → report unusual activity", "Files suddenly ending in “.locked” → disconnect, inform IT, never negotiate alone"]
     }
   }
-];
-
-/* ---------- Defense level (inbox) ----------
-   Mixed messages: attacks + harmless, genuine messages.
-   action: the best action; accept: other defensible actions (half points).
-   attack: true/false.
-   module: optional – the mail only appears once that module is available. */
-window.DEFENSE_INBOX = [
-  { id: "d1", from: "Applicant Portal Service", subject: "Account expires in 2 hours – sign in now", preview: "Sign in immediately via the following link, or your access will be deleted.", attack: true, type: "Phishing", action: "report", accept: ["reject"], why: "Time pressure and signing in via a link – open the portal yourself instead and report it." },
-  { id: "d2", from: "Sandra Meier (colleague)", subject: "Lunch on Thursday?", preview: "Do you have time for a quick lunch on Thursday?", attack: false, type: "Harmless", action: "process", why: "A normal internal message with no risk." },
-  { id: "d3", from: "M. Keller, CEO", subject: "CONFIDENTIAL – urgent candidate profiles", preview: "I need all profiles for Client X in 20 min. Please don't discuss with the team.", attack: true, type: "CEO fraud", action: "verify", accept: ["report"], why: "Authority + pressure + secrecy: verify through a known second channel." },
-  { id: "d4", from: "Lukas B. (applicant)", subject: "CV_final.zip", preview: "My CV is attached as a ZIP, password: 1234. Please take a quick look.", attack: true, type: "Malicious application", action: "report", accept: ["reject"], why: "A password-protected ZIP from an unknown sender bypasses the virus scanner: have it submitted via the applicant portal." },
-  { id: "d5", from: "Client Zattoo Ltd", subject: "Invoice as discussed", preview: "Please find attached the invoice we agreed on by phone yesterday.", attack: false, type: "Harmless", action: "process", why: "Expected context from the usual address – process as normal." },
-  { id: "d6", from: "IT Support (external)", subject: "Please share your code", preview: "For maintenance we need your SMS login code. Please reply.", attack: true, type: "Phishing / vishing", action: "report", accept: ["reject"], why: "Genuine support never asks for your login code." },
-  { id: "d7", module: "m4", from: "Alex Rivera (candidate)", subject: "Interview tomorrow + salary details", preview: "My camera still isn't working, so voice only again? Also, my salary needs to go to my account abroad – details to follow.", attack: true, type: "Fake candidate", action: "verify", accept: ["report"], why: "No live view plus an unusual payment wish: verify the identity (live ID, references) and follow the standard process." },
-  { id: "d8", module: "m5", from: "Tom Weber (colleague)", subject: "Team drive acting weird?", preview: "All my files on the team drive suddenly end in “.locked”. Can you check whether yours still open?", attack: true, type: "Ransomware (incident)", action: "report", why: "Don't try opening anything: disconnect from the network and inform IT immediately." },
-  { id: "d9", module: "m5", from: "IT Service Desk", subject: "Planned maintenance on Saturday 08:00–12:00", preview: "The applicant portal will be unavailable during maintenance. No action needed on your side.", attack: false, type: "Harmless", action: "process", why: "An announcement from the usual address – no link, no login, no request. Process as normal." }
 ];
