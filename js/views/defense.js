@@ -67,7 +67,7 @@
     var current = first.id;
 
     sec.innerHTML = '<div class="wrap">' +
-      App.pageHead("Step 3 · Defense", "Now you guard the gate",
+      App.pageHead("Step 4 · Defense", "Now you guard the gate",
         "Your inbox contains attacks from the modules – but also harmless, genuine messages. Not every unusual message is an attack. Decide correctly for each one – a run of correct calls builds a streak bonus.") +
       '<div class="dbar" id="dbar">' + barHTML() + '</div>' +
       '<div class="mailclient">' +

@@ -7,8 +7,8 @@
 
   var STEPS = [
     ["clipboard-list", "Pre-survey", "Your starting point – no solutions are shown."],
-    ["terminal", "Modules", "Expert video, hacker mission and reveal – each earns a key, a badge and points."],
-    ["building-2", "Company gate", "One key per module – together they open the gate."],
+    ["terminal", "Modules", "Expert video, hacker mission and reveal. Each earns a key – all five open the company gate."],
+    ["users", "Team mission", "In the workshop: 2–6 people combine their clues to stop a live attack together."],
     ["shield-check", "Defense level", "The roles flip: spot the attacks in an inbox and build a streak."],
     ["clipboard-check", "Final survey", "New situations, the same questions – then your evaluation."]
   ];
@@ -23,6 +23,26 @@
     var teams = C.config.teams.map(function (t) {
       return '<option' + (t === state.team ? " selected" : "") + '>' + App.esc(t) + '</option>';
     }).join("");
+    // a run is already saved on this device: continue it or start a new one
+    var card = state.started
+      ? '<div class="card start-card">' +
+          '<div class="eyebrow">' + C.config.company + '</div>' +
+          '<h3>Welcome back</h3>' +
+          '<p class="note">A run of <b>' + App.esc(state.team || "") + '</b> is saved on this device (run ID <span class="mono">' + (state.runId || "–") + '</span>).</p>' +
+          '<button class="btn accent block" id="goResume">Continue the run ' + icon("arrow-right") + '</button>' +
+          '<button class="btn glass block" id="goNew">' + icon("rotate-ccw") + 'Start a new run</button>' +
+          '<p class="note small">' + icon("info") + 'Another team on this laptop? Start a new run – this deletes the saved progress' +
+            (state.exported ? '.' : ', so export it first on the result page.') + '</p>' +
+        '</div>'
+      : '<div class="card start-card">' +
+          '<div class="eyebrow">' + C.config.company + '</div>' +
+          '<h3>Start your run</h3>' +
+          '<p class="note">You play in a team of two. Only the top three teams are shown publicly at the end.</p>' +
+          '<label class="field-label" for="teamSel">Your team</label>' +
+          '<select id="teamSel" class="select">' + teams + '</select>' +
+          '<button class="btn accent block" id="goStart">Start training ' + icon("arrow-right") + '</button>' +
+          '<p class="note small">' + icon("info") + 'The pre-survey comes first – the modules open afterwards.</p>' +
+        '</div>';
     sec.innerHTML =
       '<div class="hero dark"><div class="wrap hero-grid">' +
         '<div class="hero-copy">' +
@@ -35,15 +55,7 @@
             return '<span class="chip">' + icon(m.icon) + m.title + '</span>';
           }).join("") + '</div>' +
         '</div>' +
-        '<div class="card start-card">' +
-          '<div class="eyebrow">' + C.config.company + '</div>' +
-          '<h3>Start your run</h3>' +
-          '<p class="note">You play in a team of two. Only the top three teams are shown publicly at the end.</p>' +
-          '<label class="field-label" for="teamSel">Your team</label>' +
-          '<select id="teamSel" class="select">' + teams + '</select>' +
-          '<button class="btn accent block" id="goStart">Start training ' + icon("arrow-right") + '</button>' +
-          '<p class="note small">' + icon("info") + 'The pre-survey comes first – the modules open afterwards.</p>' +
-        '</div>' +
+        card +
       '</div></div>' +
       '<div class="wrap">' +
         '<header class="page-head center"><div class="eyebrow">How it works</div><h2>From attacker to defender in five steps</h2></header>' +
@@ -55,6 +67,16 @@
           return '<div class="principle"><span class="ico-tile sm">' + icon(p[0]) + '</span><div><b>' + p[1] + '</b><p>' + p[2] + '</p></div></div>';
         }).join("") + '</div>' +
       '</div>';
+
+    if (state.started) {
+      $("#goResume").onclick = function () { App.go(App.nextStep()); };
+      $("#goNew").onclick = function () {
+        if (!confirm("Start a new run on this device? The saved progress of " + (state.team || "the last team") + " will be deleted." +
+          (state.exported ? "" : "\n\nThe results have NOT been exported yet."))) return;
+        App.reset();
+      };
+      return;
+    }
 
     $("#goStart").onclick = function () {
       state.team = $("#teamSel").value; state.started = true;

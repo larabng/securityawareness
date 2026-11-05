@@ -92,10 +92,11 @@
       return;
     }
     if (!pre && !state.preDone) { sec.innerHTML = App.preGateHTML(); return; }
-    if (!pre && !App.defenseDone()) {
-      sec.innerHTML = App.gateHTML("lock", "Finish the defense level first",
-        "The final survey measures what changed through the training, so it opens after the modules and the defense level.",
-        "Go to the defense level", "defense");
+    if (!pre && (!App.teamDone() || !App.defenseDone())) {
+      var team = !App.teamDone();
+      sec.innerHTML = App.gateHTML("lock", team ? "Finish the team mission first" : "Finish the defense level first",
+        "The final survey measures what changed through the training, so it opens after the modules, the team mission and the defense level.",
+        team ? "Go to the team mission" : "Go to the defense level", team ? "team" : "defense");
       return;
     }
 

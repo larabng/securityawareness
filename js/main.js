@@ -5,7 +5,7 @@
 (function (App) {
   "use strict";
   var state = App.state, icon = App.icon, $ = App.$, $$ = App.$$;
-  var NAV = [["start", "Start"], ["survey-pre", "Survey"], ["modules", "Modules"], ["defense", "Defense"], ["survey-post", "Finish"]];
+  var NAV = [["start", "Start"], ["survey-pre", "Survey"], ["modules", "Modules"], ["team", "Team mission"], ["defense", "Defense"], ["survey-post", "Finish"]];
 
   App.show = function (id) {
     $$(".section").forEach(function (s) { s.classList.toggle("active", s.id === id); });
@@ -22,15 +22,17 @@
     var steps = {
       "survey-pre": state.preDone,
       "modules": App.keysCollected() >= App.keysTotal(),
+      "team": App.teamDone(),
       "defense": App.defenseDone(),
       "survey-post": state.postDone
     };
-    var done = 0;   // survey, any module, any defense answer, final survey
+    var done = 0;   // survey, any module, team mission, any defense answer, final survey
     if (state.preDone) done++;
     if (Object.keys(state.missionDone).length) done++;
+    if (App.teamDone()) done++;
     if (Object.keys(state.defense).length) done++;
     if (state.postDone) done++;
-    $("#progbar").style.width = Math.round(done / 4 * 100) + "%";
+    $("#progbar").style.width = Math.round(done / 5 * 100) + "%";
     $$(".nav a").forEach(function (a) { a.classList.toggle("done", !!steps[a.getAttribute("data-sec")]); });
   };
 
@@ -47,12 +49,6 @@
   document.addEventListener("click", function (e) {
     var g = e.target.closest("[data-go]");
     if (g) { e.preventDefault(); App.go(g.getAttribute("data-go")); }
-  });
-
-  // Progress lives only in this tab: warn before closing it with unexported answers
-  window.addEventListener("beforeunload", function (e) {
-    if (App.resetting || !state.started || state.exported) return;
-    e.preventDefault(); e.returnValue = "";
   });
 
   document.addEventListener("DOMContentLoaded", function () {

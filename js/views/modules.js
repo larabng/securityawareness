@@ -31,8 +31,8 @@
         '<span class="mod-no">Company gate</span><span class="tag key">' + got + ' / ' + all + ' keys</span></div>' +
       '<h3>' + (open ? "The gate is open" : "Collect all " + all + " keys") + '</h3>' +
       '<p class="note">' + (open
-        ? "You have seen through every weakness. Now the roles flip – defend the company in the inbox."
-        : "Every module gives you one key. With all of them the company gate opens – then the roles flip and you defend the company.") + '</p>' +
+        ? "You have seen through every weakness. Behind the gate a live attack is waiting – you stop it together in the team mission."
+        : "Every module gives you one key. With all of them the company gate opens – behind it waits the team mission.") + '</p>' +
       App.keyringHTML(true) +
     '</article>';
   }
@@ -46,7 +46,7 @@
       '<div class="hud">' + App.statsHTML() + '<div class="card">' + App.metersHTML() + '</div></div>' +
       App.keyringHTML() +
       '<div class="mod-grid">' + C.modules.map(cardHTML).join("") + gateCardHTML() + '</div>' +
-      '<div class="page-foot"><button class="btn accent" id="toDefense" data-go="defense">Continue to the defense level ' + icon("arrow-right") + '</button></div>' +
+      '<div class="page-foot"><button class="btn accent" id="toTeam" data-go="team">Continue to the team mission ' + icon("arrow-right") + '</button></div>' +
       '</div>';
     $$("[data-mod]", sec).forEach(function (b) { b.onclick = function () { App.go("module-detail", b.getAttribute("data-mod")); }; });
   };

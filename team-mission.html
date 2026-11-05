@@ -1,347 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Team Mission — Inside the Mind of a Hacker</title>
-<meta name="description" content="A cooperative phishing mission: everyone sees the same email, but each role has different parts redacted. Read your parts out loud, combine, and decide together.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23002A5C'/><g fill='%23EE8A1D'><rect x='24' y='40' width='8' height='30' rx='4'/><rect x='38' y='28' width='8' height='42' rx='4' fill='%234E8ABE'/><rect x='52' y='20' width='8' height='50' rx='4' fill='%2377AE9A'/><rect x='66' y='34' width='8' height='36' rx='4' fill='%235BA862'/></g></svg>">
-<style>
-  :root{
-    --navy:#002A5C; --blue:#0065B3; --blue2:#4E8ABE; --teal:#77AE9A; --green:#5BA862;
-    --orange:#EE8A1D; --orange-d:#B96708; --red:#D64541;
-    --bg:#F4F7FB; --surface:#fff; --ink:#0E1C2B; --ink-soft:#51606E; --line:#E1E8F0;
-    --font:'IBM Plex Sans','Segoe UI',system-ui,Arial,sans-serif;
-    --display:'Rubik','Segoe UI',system-ui,Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.55}
-  h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0 0 .4em}
-  p{margin:0 0 .8em}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-  header.site{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.18)}
-  header.site .wrap{display:flex;align-items:center;gap:14px;height:62px}
-  .brand{display:flex;align-items:center;gap:12px;font-weight:700}
-  .bars{display:inline-flex;gap:3px;align-items:flex-end;height:26px}
-  .bars span{width:5px;border-radius:3px;display:block}
-  .bars span:nth-child(1){height:14px;background:var(--orange)}
-  .bars span:nth-child(2){height:20px;background:var(--blue2)}
-  .bars span:nth-child(3){height:26px;background:var(--teal)}
-  .bars span:nth-child(4){height:18px;background:var(--green)}
-  .brand small{display:block;font-weight:400;font-size:11px;opacity:.8}
-  .role-chip{margin-left:auto;font-size:13px;font-weight:600;background:rgba(255,255,255,.14);padding:7px 14px;border-radius:999px}
-  main{padding:32px 0 60px}
-  .eyebrow{color:var(--orange-d);font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
-  .lead{font-size:18px;color:var(--ink-soft);max-width:66ch}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:0 6px 24px rgba(0,42,92,.08)}
-  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:var(--blue);color:#fff;border:none;
-    font-weight:700;padding:13px 22px;border-radius:11px;font-size:15px;font-family:inherit;box-shadow:0 4px 14px rgba(0,101,179,.3);transition:transform .08s,background .2s}
-  .btn:hover{background:#0074cc;transform:translateY(-1px)}
-  .btn.alt{background:var(--orange);box-shadow:0 4px 14px rgba(238,138,29,.35)}
-  .btn.alt:hover{background:#ff9a2e}
-  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft);box-shadow:none}
-  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-  .hidden{display:none !important}
-  input[type=text]{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:11px;font-family:inherit;font-size:16px}
-  /* seat picker */
-  .seats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px}
-  .seat{cursor:pointer;text-align:left;border:2px solid var(--line);border-radius:16px;padding:22px;background:#fff;transition:all .15s;font-family:inherit}
-  .seat:hover{border-color:var(--blue);background:#f5faff;transform:translateY(-2px)}
-  .seat.leader{border-color:var(--orange)}
-  .seat.leader:hover{background:#fff6ec}
-  .seat .snum{font-size:13px;font-weight:700;color:var(--ink-soft)}
-  .seat .ic{font-size:34px;margin:6px 0 2px}
-  .seat h3{margin:4px 0 4px;font-size:21px}
-  .seat .who{color:var(--ink-soft);font-size:14px}
-  .panel-title{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:20px;margin-bottom:12px}
-  .note{font-size:13px;color:var(--ink-soft)}
-  .callout{border-radius:12px;padding:16px 20px;font-size:16px;margin:8px 0 2px}
-  .callout.leader{background:var(--navy);color:#fff}
-  .callout.leader b{color:var(--orange)}
-  .callout.member{background:#eaf2fb;border-left:4px solid var(--blue);color:var(--ink)}
-  .callout.member b{color:#0b4a86}
-  .brief{background:#eef6ec;border:1px solid var(--green);border-radius:12px;padding:14px 18px;font-size:16px;margin:14px 0 2px;color:#24503a}
-  .brief b{color:#1f7a3d}
-  .flow{margin:0;padding-left:22px}
-  .flow li{margin-bottom:9px;font-size:16px;line-height:1.45}
-  .relaybox{background:#fff6ec;border:1px solid var(--orange);border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
-  .factrow{display:flex;gap:10px;font-size:15px;padding:10px 0;border-bottom:1px solid var(--line)}
-  .factrow:last-child{border-bottom:none}
-  .factrow .k{color:var(--ink-soft);min-width:150px;font-weight:600}
-  /* ===== realistic email ===== */
-  .email{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,42,92,.10);background:#fff;max-width:720px}
-  .email .etop{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid #eef2f7}
-  .email .eav{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:#0065B3;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--display);font-size:18px}
-  .email .efrom{flex:1;min-width:0}
-  .email .ename{font-weight:700;font-size:16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-  .email .eaddr{font-weight:400;color:var(--ink-soft);font-size:14px}
-  .email .emeta{color:var(--ink-soft);font-size:13px;margin-top:3px}
-  .email .estar{flex:0 0 auto;color:#cbd5e1;font-size:20px}
-  .email .esubj{padding:16px 20px 4px;font-size:20px;font-weight:700;font-family:var(--display)}
-  .email .ebody{padding:6px 20px 18px;font-size:15px;color:#243240}
-  .email .ebody p{margin:0 0 12px}
-  .email .ecta{display:inline-block;background:#0065B3;color:#fff;padding:11px 22px;border-radius:8px;font-weight:600;font-size:15px;margin:4px 0 6px}
-  .email .elinkbar{background:#f1f5f9;border-top:1px solid #eef2f7;padding:10px 20px;font-size:13px;color:var(--ink-soft);font-family:'Consolas',monospace;display:flex;gap:8px;align-items:center}
-  /* redaction = blackout bar */
-  .rb{display:inline-flex;align-items:center;gap:6px;background:#10212f;color:#7e97ad;border-radius:5px;
-     padding:3px 10px;font-size:12px;font-weight:600;letter-spacing:.3px;font-family:var(--font);vertical-align:middle;
-     background-image:repeating-linear-gradient(45deg,#10212f,#10212f 6px,#142836 6px,#142836 12px)}
-  .rb .lk{font-size:12px}
-  .rb.line{display:flex;height:16px;margin:7px 0;border-radius:4px}
-  .rb.wide{min-width:280px}
-  .rb.block{display:block}
-  .email.redacted-heavy{filter:saturate(.9)}
-  .legend{font-size:13px;color:var(--ink-soft);margin-top:10px;display:flex;align-items:center;gap:8px}
-  .legend .rb{pointer-events:none}
-  /* decision */
-  .decision{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-  .decision button{border:1px solid var(--line);background:#f6f9fc;border-radius:10px;padding:12px 18px;cursor:pointer;
-    font-family:inherit;font-size:15px;font-weight:600;color:var(--ink)}
-  .decision button:hover{border-color:var(--blue);color:var(--blue)}
-  .decision button.pick{border-color:var(--orange);background:#fff6ec;color:var(--navy)}
-  .reveal{background:linear-gradient(180deg,#fff,#f1f7ff);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:14px;padding:24px;margin-top:22px}
-  .reveal.bad{border-left-color:var(--red)}
-  .reveal h3{color:var(--navy)}
-  .stops li{margin-bottom:6px}
-  footer{background:var(--navy);color:#bcd1e8;padding:22px 0;font-size:13px;margin-top:40px}
-  @media(max-width:820px){.seats{grid-template-columns:1fr}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Mission – Inside the Mind of a Hacker</title>
+  <meta name="description" content="Cooperative workshop round: 2–6 people, one shared table, every person holds part of the clues on their phone. Combine them by talking and decide together.">
+  <meta name="theme-color" content="#050C18">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/base.css?v=20261105">
+  <link rel="stylesheet" href="css/components.css?v=20261105">
+  <link rel="stylesheet" href="css/team.css?v=20261105">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23050C18'/><g fill='%23EE8A1D'><rect x='24' y='40' width='8' height='30' rx='4'/><rect x='38' y='28' width='8' height='42' rx='4' fill='%234E8ABE'/><rect x='52' y='20' width='8' height='50' rx='4' fill='%2377AE9A'/><rect x='66' y='34' width='8' height='36' rx='4' fill='%235BA862'/></g></svg>">
 </head>
 <body>
-<header class="site"><div class="wrap">
-  <div class="brand"><span class="bars"><span></span><span></span><span></span><span></span></span>
-    <span>Team Mission<small>Inside the Mind of a Hacker · Cooperative prototype</small></span></div>
-  <span class="role-chip" id="roleChip">Prototype</span>
-</div></header>
 
-<main class="wrap">
-
-  <!-- JOIN -->
-  <section id="join">
-    <div class="eyebrow">Cooperative mission · team of 3</div>
-    <h1 style="font-size:40px">Join your team</h1>
-    <p class="lead">Enter your team name and take a seat — your <b>role is assigned from the seat</b>. Everyone sees the <b>same email</b>, but each role has different parts <b>blacked out</b>. Talk together to fill the gaps, then decide.</p>
-    <div class="brief">👥 Each team member sees different information. Talk to each other so your <b>leader</b> can answer every question — for your team.</div>
-    <div class="card" style="margin-top:18px">
-      <div class="panel-title">📋 How it works</div>
-      <ol class="flow">
-        <li><b>One device each.</b> Everyone on the team opens this page on their own phone or laptop.</li>
-        <li><b>Same team name.</b> You all enter the <b>same team name</b> below — it’s just a label for your group.</li>
-        <li><b>Take a seat → get a role.</b> Each person takes a different seat: one <b>Team leader</b> and two <b>members</b>.</li>
-        <li><b>Same email, different views.</b> You all open the same email, but each role has <b>different parts blacked out</b> — and nobody is told who can see what.</li>
-        <li><b>Talk together.</b> Work out who can read which blacked-out parts and share them out loud, until the leader has the full picture.</li>
-        <li><b>The leader decides,</b> then reveals the answer together.</li>
-      </ol>
-    </div>
-    <div class="card" style="margin-top:18px;max-width:560px">
-      <label style="font-weight:600">Team name<br>
-        <input type="text" id="teamName" placeholder="e.g. Team Falcon" autocomplete="off"></label>
-      <p class="note" style="margin:12px 0 0">Everyone in your team types the <b>same</b> team name, then each person takes a different seat.</p>
-    </div>
-    <h3 style="margin:26px 0 0;font-family:var(--display)">Take a seat</h3>
-    <div class="seats">
-      <button class="seat leader" data-seat="1" onclick="takeSeat(1)">
-        <div class="snum">SEAT 1</div><div class="ic">🧭</div><h3>Team leader</h3>
-        <div class="who">Makes the final call. Has an account &amp; IT check of their own — but the email is blacked out.</div>
-      </button>
-      <button class="seat" data-seat="2" onclick="takeSeat(2)">
-        <div class="snum">SEAT 2</div><div class="ic">📄</div><h3>Member A</h3>
-        <div class="who">You’ll see part of the email — the rest is blacked out.</div>
-      </button>
-      <button class="seat" data-seat="3" onclick="takeSeat(3)">
-        <div class="snum">SEAT 3</div><div class="ic">📄</div><h3>Member B</h3>
-        <div class="who">You’ll see a different part — the rest is blacked out.</div>
-      </button>
-    </div>
-    <p class="note" style="margin-top:16px">Deep-link a seat: add <b>?team=Falcon&amp;seat=1</b> (1 = leader, 2 &amp; 3 = members) to the URL.</p>
-  </section>
-
-  <!-- MEMBER VIEW -->
-  <section id="memberView" class="hidden">
-    <div class="eyebrow" id="mEyebrow"></div>
-    <h1 id="mHeading" style="font-size:34px"></h1>
-    <div class="callout member" id="mCallout"></div>
-    <div id="mEmail" style="margin-top:18px"></div>
-    <div class="legend"><span class="rb"><span class="lk">🔒</span> blacked out</span> = only a teammate can read this. Ask them.</div>
-    <div style="margin-top:20px"><button class="btn ghost" onclick="restart()">↺ Leave team</button></div>
-  </section>
-
-  <!-- LEADER VIEW -->
-  <section id="leaderView" class="hidden">
-    <div class="eyebrow">Team leader · you make the call</div>
-    <h1 style="font-size:34px">🧭 Combine what the three of you see</h1>
-    <div class="callout leader">You can check the <b>account &amp; IT context</b> yourself (below). In the email, almost everything is <b>blacked out for you</b> — your members can read the hidden parts. Talk together to find out who sees what, then decide.</div>
-
-    <div class="card" style="margin-top:18px">
-      <div class="panel-title">🧭 What you can check yourself</div>
-      <div id="leaderPanel"></div>
-    </div>
-
-    <div style="margin-top:18px"><div class="panel-title">📧 The email that arrived</div><div id="lEmail"></div>
-      <div class="legend"><span class="rb"><span class="lk">🔒</span> blacked out</span> = only a teammate can read this. Talk to find out who.</div>
-    </div>
-
-    <div class="card" style="margin-top:18px">
-      <h3 style="font-family:var(--display)">Make the call</h3>
-      <p class="note">Talk it through with your members — work out together what seems off, then decide what the recruiter should do. There is no checklist: you find the warning signs yourselves.</p>
-      <div class="decision" id="decision">
-        <button data-act="process">Process normally</button>
-        <button data-act="verify">Verify (2nd channel)</button>
-        <button data-act="report">Report to IT</button>
-        <button data-act="reject">Just delete</button>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <span class="logo-bars"><span></span><span></span><span></span><span></span></span>
+        <span>Team mission<small>Inside the Mind of a Hacker · Workshop</small></span>
       </div>
-      <div style="margin-top:16px"><button class="btn alt" id="revealBtn" disabled>Reveal the answer →</button></div>
+      <span class="tm-chip" id="tmChip"></span>
     </div>
+  </header>
 
-    <div id="revealBox"></div>
-    <div style="margin-top:20px"><button class="btn ghost" onclick="restart()">↺ Leave team</button></div>
-  </section>
+  <main id="tm"></main>
 
-</main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <div><strong>Inside the Mind of a Hacker</strong> · Team mission<br>WI-Projekt HS26 · ManpowerGroup Switzerland</div>
+      <div class="footer-meta">Fictional company, fictional data.<br>Nothing is sent or stored online.</div>
+    </div>
+  </footer>
 
-<footer><div class="wrap">Prototype · WI-Projekt HS26 · ManpowerGroup</div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>
-/* =======================================================================
-   One realistic phishing email. Everyone sees the SAME email, but each
-   field is owned by one role; for the others it is blacked out.
-     Technical : sender address, reply-to, send time, real link
-     Content   : subject, body, the call-to-action label
-     Leader    : neither — only the account/IT context (its own panel)
-   No warning signs are named anywhere. The reveal appears only after the
-   team has decided.
-   ======================================================================= */
-var EMAIL = {
-  avatar:"TB",
-  nameVisible:"TalentBridge Portal",      // display name — visible to all (realistic)
-  toVisible:"you (recruiter@talentbridge.ch)",
-  fields:{
-    addr:    { owner:"Technical", html:"&lt;no-reply@talentbridge-login.ch&gt;" },
-    time:    { owner:"Technical", html:"Today, 03:12" },
-    replyto: { owner:"Technical", html:"support@mail-secure-verify.ch" },
-    link:    { owner:"Technical", html:"http://tb-portal.verify-now.ch/login" },
-    subject: { owner:"Content",   html:"Action required: confirm your recruiter account" },
-    body:    { owner:"Content",   html:"<p>Dear user,</p><p>We detected a problem with your recruiter account. Your access will be suspended within 30 minutes unless you confirm your details now.</p><p>Please click the button below and sign in to keep your account active.</p>" },
-    cta:     { owner:"Content",   html:"Confirm account" }
-  }
-};
-var ROLE_NAME = { a:"Technical", b:"Content", leader:"—" };
-
-function bar(cls){
-  return '<span class="rb '+(cls||"")+'"><span class="lk">🔒</span></span>';
-}
-function field(key, roleName, cls){
-  var f = EMAIL.fields[key];
-  return (f.owner===roleName) ? f.html : bar(cls);
-}
-function renderEmail(roleName){
-  var body = EMAIL.fields.body.owner===roleName ? EMAIL.fields.body.html
-            : '<span class="rb line block wide"></span><span class="rb line block"></span><span class="rb line block wide"></span>';
-  var cta  = EMAIL.fields.cta.owner===roleName ? '<span class="ecta">'+EMAIL.fields.cta.html+'</span>'
-            : '<span class="ecta" style="background:#10212f">'+bar()+'</span>';
-  return '<div class="email">'+
-    '<div class="etop">'+
-      '<div class="eav">'+EMAIL.avatar+'</div>'+
-      '<div class="efrom">'+
-        '<div class="ename">'+EMAIL.nameVisible+' <span class="eaddr">'+field("addr",roleName)+'</span></div>'+
-        '<div class="emeta">to '+EMAIL.toVisible+' · '+field("time",roleName)+'</div>'+
-      '</div>'+
-      '<div class="estar">☆</div>'+
-    '</div>'+
-    '<div class="esubj">'+(EMAIL.fields.subject.owner===roleName?EMAIL.fields.subject.html:bar("wide"))+'</div>'+
-    '<div class="ebody">'+body+'<br>'+cta+'</div>'+
-    '<div class="elinkbar">🔗 Button links to: '+field("link",roleName)+'</div>'+
-    '<div class="elinkbar" style="border-top:none">↩ Reply-To: '+field("replyto",roleName)+'</div>'+
-  '</div>';
-}
-
-var SCENARIO_LEADER_PANEL =
-  '<div class="factrow"><span class="k">Message is about</span><span>Your recruiter account on the TalentBridge portal</span></div>'+
-  '<div class="factrow"><span class="k">Real portal check</span><span>You sign in to <b>portal.talentbridge.ch</b> → account <b>active</b>, no expiry pending</span></div>'+
-  '<div class="factrow"><span class="k">IT security bulletin</span><span><b>No</b> account-confirmation campaign is running this week</span></div>';
-
-var MEMBER_TEXT = {
-  a: { eyebrow:"Team member", heading:"📄 Your view of the email",
-       callout:"Some parts are <b>blacked out for you</b> — someone else on your team can read them. Talk together to find out who sees what." },
-  b: { eyebrow:"Team member", heading:"📄 Your view of the email",
-       callout:"Some parts are <b>blacked out for you</b> — someone else on your team can read them. Talk together to find out who sees what." }
-};
-
-var SEAT_ROLE = { 1:"leader", 2:"a", 3:"b" };
-var state = { team:null, role:null, decision:null };
-function qparam(n){ try{return new URLSearchParams(location.search).get(n);}catch(e){return null;} }
-
-function takeSeat(seat){
-  var t=(document.getElementById("teamName").value||"").trim();
-  if(!t){ var el=document.getElementById("teamName"); el.focus(); el.style.borderColor="#D64541"; return; }
-  state.team=t; startRole(SEAT_ROLE[seat]);
-}
-function startRole(role){
-  state.role=role; state.decision=null;
-  document.getElementById("join").classList.add("hidden");
-  document.getElementById("memberView").classList.add("hidden");
-  document.getElementById("leaderView").classList.add("hidden");
-  var tl = state.team ? (" · "+state.team) : "";
-  if(role==="leader"){ renderLeader(); document.getElementById("roleChip").textContent="🧭 Leader"+tl; }
-  else { renderMember(role); document.getElementById("roleChip").textContent=(role==="a"?"📄 Member A":"📄 Member B")+tl; }
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function renderMember(r){
-  var d=MEMBER_TEXT[r];
-  document.getElementById("memberView").classList.remove("hidden");
-  document.getElementById("mEyebrow").textContent=d.eyebrow;
-  document.getElementById("mHeading").innerHTML=d.heading;
-  document.getElementById("mCallout").innerHTML=d.callout;
-  document.getElementById("mEmail").innerHTML=renderEmail(ROLE_NAME[r]);
-}
-function renderLeader(){
-  document.getElementById("leaderView").classList.remove("hidden");
-  document.getElementById("leaderPanel").innerHTML=SCENARIO_LEADER_PANEL;
-  document.getElementById("lEmail").innerHTML=renderEmail("—"); // nothing owned by leader → all redacted
-  state.decision=null;
-  Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(b){
-    b.classList.remove("pick"); b.disabled=false;
-    b.onclick=function(){
-      Array.prototype.forEach.call(document.querySelectorAll("#decision button"), function(x){x.classList.remove("pick");});
-      b.classList.add("pick"); state.decision=b.getAttribute("data-act");
-      document.getElementById("revealBtn").disabled=false;
-    };
-  });
-  document.getElementById("revealBtn").disabled=true;
-  document.getElementById("revealBox").innerHTML="";
-  document.getElementById("revealBtn").onclick=doReveal;
-}
-function doReveal(){
-  var correct = state.decision==="report";
-  document.getElementById("revealBox").innerHTML =
-    '<div class="reveal'+(correct?"":" bad")+'">'+
-      '<h3>'+(correct?"✅ Correct — report it.":"✖ Not the safest call — this one should be reported.")+'</h3>'+
-      '<p>This was a phishing attempt, and the proof was <b>spread across the whole team</b>. No single person could be sure — only once you pieced it together:</p>'+
-      '<ul class="stops">'+
-        '<li>🧭 <b>The leader’s check</b> — the real portal shows the account active, and IT is running no such campaign.</li>'+
-        '<li>📄 <b>One member’s view</b> — a look-alike sender domain (talentbridge-login.ch) and a button that led to another site (verify-now.ch), sent at 03:12.</li>'+
-        '<li>📄 <b>The other member’s view</b> — a generic greeting, a 30-minute deadline, a request to sign in through the email.</li>'+
-      '</ul>'+
-      '<p style="margin-top:10px"><b>The habit:</b> never sign in through links in a message. Pause, check the context, verify through a known, independent channel, and report it.</p>'+
-    '</div>';
-  document.getElementById("revealBox").scrollIntoView({behavior:"smooth"});
-}
-function restart(){
-  state={team:null,role:null,decision:null};
-  document.getElementById("memberView").classList.add("hidden");
-  document.getElementById("leaderView").classList.add("hidden");
-  document.getElementById("join").classList.remove("hidden");
-  document.getElementById("roleChip").textContent="Prototype";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-(function(){
-  var team=qparam("team"); if(team) document.getElementById("teamName").value=team;
-  var seat=qparam("seat"); var role=(qparam("role")||"").toLowerCase();
-  if(seat && SEAT_ROLE[seat] && team){ state.team=team; startRole(SEAT_ROLE[seat]); return; }
-  if((role==="leader"||role==="a"||role==="b") && team){ state.team=team; startRole(role); }
-})();
-</script>
+  <script src="content/config.js?v=20261105"></script>
+  <script src="content/team.js?v=20261105"></script>
+  <script src="js/core/util.js?v=20261105"></script>
+  <script src="js/core/icons.js?v=20261105"></script>
+  <script src="js/core/team.js?v=20261105"></script>
+  <script src="js/vendor/qrcode.js?v=20261105"></script>
+  <script src="js/team-page.js?v=20261105"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
 /* =========================================================================
-   Run state – kept only in this browser tab (sessionStorage "imoah").
-   Evaluation runs via the CSV export (js/export.js).
+   Run state – kept in this browser on this device (localStorage "imoah"),
+   so a run survives closing the tab between the modules and the workshop.
+   It stays until "Reset" on the result page or "Start a new run" on the
+   start page. Evaluation runs via the CSV export (js/export.js).
    ========================================================================= */
 (function (App) {
   "use strict";
   var C = window.CONTENT;
 
-  App.APP_VERSION = "2026-11-03";
+  App.APP_VERSION = "2026-11-05";
   App.DIFF_POINTS = { easy: 30, medium: 50, hard: 80 };
   App.DIFF_LABEL = { easy: "Easy", medium: "Medium", hard: "Hard" };
   App.ACTION_LABEL = { process: "Process", verify: "Verify (2nd channel)", report: "Report", reject: "Reject" };
@@ -34,11 +36,12 @@
     streak: 0, maxStreak: 0,
     loot: 0, damage: 0,
     defense: {},       // mailId -> {action, correct, acceptable}
-    defenseScore: 0
+    defenseScore: 0,
+    teamMission: null  // decoded completion code of the workshop table (js/core/team.js)
   };
-  try { var saved = sessionStorage.getItem("imoah"); if (saved) Object.assign(state, JSON.parse(saved)); } catch (e) {}
+  try { var saved = localStorage.getItem("imoah"); if (saved) Object.assign(state, JSON.parse(saved)); } catch (e) {}
 
-  App.save = function () { try { sessionStorage.setItem("imoah", JSON.stringify(state)); } catch (e) {} };
+  App.save = function () { try { localStorage.setItem("imoah", JSON.stringify(state)); } catch (e) {} };
   App.addPoints = function (n) { state.points = Math.max(0, state.points + n); };
 
   // One key per module; the company gate opens once every key is collected
@@ -49,12 +52,22 @@
     if (m.requiresKeys && App.keysCollected() < m.requiresKeys) return false;
     return true;
   };
+  App.teamDone = function () { return !!state.teamMission; };
+  // where a saved run continues: the first step that is not finished yet
+  App.nextStep = function () {
+    if (!state.preDone) return "survey-pre";
+    if (App.keysCollected() < App.keysTotal()) return "modules";
+    if (!App.teamDone()) return "team";
+    if (!App.defenseDone()) return "defense";
+    if (!state.postDone) return "survey-post";
+    return "result";
+  };
   App.defenseDone = function () { return App.INBOX.every(function (m) { return state.defense[m.id]; }); };
 
   App.resetting = false;
   App.reset = function () {
     App.resetting = true;
-    try { sessionStorage.removeItem("imoah"); } catch (e) {}
+    try { localStorage.removeItem("imoah"); } catch (e) {}
     location.reload();
   };
 })(window.App);

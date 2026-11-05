@@ -102,6 +102,21 @@
       });
       if (m.mission.steps.length) rows.push(["mod_score_" + m.id, mp.length ? mp.filter(function (r) { return r === 3; }).length + "/" + m.mission.steps.length : ""]);
     });
+    // Team mission (workshop table, decoded from the completion code)
+    var tm = state.teamMission, ts = tm ? App.team.summary(tm) : null;
+    rows.push(["team_done", tm ? "1" : "0"]);
+    rows.push(["team_size", tm ? tm.n : ""]);
+    rows.push(["team_score", tm ? ts.score : ""]);
+    rows.push(["team_questions_correct", tm ? ts.questions : ""]);
+    rows.push(["team_decision_score", tm ? ts.decisions : ""]);
+    rows.push(["team_minutes", tm ? tm.minutes : ""]);
+    rows.push(["team_code", tm ? tm.code : ""]);
+    App.team.rounds.forEach(function (r, ri) {
+      var rr = tm ? tm.rounds[ri] : null;
+      r.questions.forEach(function (q, qi) { rows.push(["team_" + r.id + "_q" + (qi + 1), rr ? rr.q[qi] : ""]); });
+      rows.push(["team_" + r.id + "_decision", rr ? rr.d : ""]);
+      rows.push(["team_" + r.id + "_score", rr ? App.team.roundScore(rr) : ""]);
+    });
     App.INBOX.forEach(function (m) {
       var a = state.defense[m.id];
       rows.push(["def_" + m.id, a ? a.action : ""]);

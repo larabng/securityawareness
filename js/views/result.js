@@ -6,6 +6,17 @@
   "use strict";
   var C = window.CONTENT, state = App.state, icon = App.icon, $ = App.$, INBOX = App.INBOX;
 
+  function teamHTML() {
+    var tm = state.teamMission;
+    if (!tm) return '';
+    var T = App.team, sum = T.summary(tm);
+    return '<section class="card team-res"><h3>' + icon("users") + 'Team mission</h3>' +
+      '<p class="note">In a group of ' + tm.n + ' you scored <b>' + sum.score + ' of ' + T.maxScore() + '</b> points – by combining clues nobody had alone.</p>' +
+      '<div class="team-res-rounds">' + T.rounds.map(function (r, ri) {
+        return '<span class="tag info">' + icon(r.icon) + r.kicker + ' ' + T.roundScore(tm.rounds[ri]) + '/' + T.maxRound(ri) + '</span>';
+      }).join("") + '</div></section>';
+  }
+
   App.views.result = function () {
     var sec = $("#result");
     var defSafe = Object.keys(state.defense).filter(function (k) { return state.defense[k].correct || state.defense[k].acceptable; }).length;
@@ -48,6 +59,7 @@
       '</div></div>' +
       '<div class="wrap">' +
         '<section class="card"><h3>' + icon("award") + 'Your badges</h3><div class="badge-grid">' + badges + '</div></section>' +
+        teamHTML() +
         '<div class="result-cols">' +
         '<section class="card"><h3>' + icon("trophy") + 'Top teams</h3><div class="lb">' +
           top.map(function (r, i) {
@@ -65,8 +77,8 @@
           '<div class="meter"><div class="meter-track"><div class="meter-fill safe" style="width:' + defPct + '%"></div></div></div></section>' +
         '</div>' +
         '<section class="card facilitator"><h3>' + icon("clipboard-list") + 'For the test facilitator</h3>' +
-          '<p class="note">All answers (pre/post incl. self-assessment, missions, defense, feedback, points) can be exported anonymised. Run ID: <b class="mono">' + (state.runId || "–") + '</b></p>' +
-          '<p class="export-warn' + (state.exported ? " done" : "") + '" id="expWarn">' + (state.exported ? icon("circle-check") + "Results exported." : icon("triangle-alert") + "Answers are only kept in this browser tab – export before closing it.") + '</p>' +
+          '<p class="note">All answers (pre/post incl. self-assessment, missions, team mission, defense, feedback, points) can be exported anonymised. Run ID: <b class="mono">' + (state.runId || "–") + '</b></p>' +
+          '<p class="export-warn' + (state.exported ? " done" : "") + '" id="expWarn">' + (state.exported ? icon("circle-check") + "Results exported." : icon("triangle-alert") + "Answers are only kept in this browser on this device – export them before resetting.") + '</p>' +
           '<div class="btn-row"><button class="btn sm" id="expBtn">' + icon("download") + 'Export results as CSV</button>' +
           '<button class="btn sm subtle" id="resetBtn">' + icon("rotate-ccw") + 'Reset for new season</button></div>' +
         '</section>' +

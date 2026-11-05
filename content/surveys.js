@@ -86,8 +86,8 @@ CONTENT.surveys = {
     att: { type: "matrix",
       text: "How much do you agree with the following statements?",
       scale: ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
-      rows: ["I would question an urgent instruction from the CEO", "I know whom to report a security incident to", "I would report an incident even if I made the mistake myself", "Security rules slow down my work"],
-      keys: ["question_ceo", "know_whom", "report_own_mistake", "rules_slow"] },
+      rows: ["I would question an urgent instruction from the CEO", "I know whom to report a security incident to", "I would report an incident even if I made the mistake myself", "Security rules slow down my work", "If a message seems odd to me, I talk it through with a colleague before I act"],
+      keys: ["question_ceo", "know_whom", "report_own_mistake", "rules_slow", "discuss_first"] },
     k1: { type: "multi", conf: true,
       text: "Which of these are warning signs of a phishing or fraud attempt?",
       hint: "Select all that apply.",
@@ -156,7 +156,7 @@ CONTENT.surveys = {
       options: ["Short videos", "Gamified training (like this one)", "Phishing simulations", "E-learning modules", "Classroom sessions", "Newsletter / tips"] }
   ],
 
-  /* ---------- Post-survey (after the defense level) ---------- */
+  /* ---------- Post-survey (after the team mission and the defense level) ---------- */
   post: [
     { use: "target", section: "Your self-assessment" },
     { use: "prep", section: "Your self-assessment" },
@@ -167,8 +167,8 @@ CONTENT.surveys = {
       text: "How much do you agree?",
       hint: "1 = not at all · 5 = very much",
       scale: ["1", "2", "3", "4", "5"],
-      rows: ["I enjoyed the training", "The content was clear", "What I learned is relevant to my everyday work", "Seeing the attacker's perspective helped me understand attacks"],
-      keys: ["fun", "clear", "relevant", "perspective"] },
+      rows: ["I enjoyed the training", "The content was clear", "What I learned is relevant to my everyday work", "Seeing the attacker's perspective helped me understand attacks", "Combining clues in the team mission helped me spot warning signs I would have missed alone"],
+      keys: ["fun", "clear", "relevant", "perspective", "teamwork"] },
     { id: "fb_change", section: "Feedback on the training", type: "textarea", required: false,
       text: "What will you do differently from tomorrow?" },
     { id: "fb_missing", section: "Feedback on the training", type: "textarea", required: false,
