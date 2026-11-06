@@ -1,6 +1,6 @@
 # Inside the Mind of a Hacker – Schriftliche Arbeit WI-Projekt HS26
 
-Entwurf vom 05.11.2026
+Entwurf vom 06.11.2026
 
 ## Titelblatt
 
@@ -24,7 +24,7 @@ Personaldienstleister wie ManpowerGroup verarbeiten grosse Mengen sensibler Date
 
 Klassische Awareness-Massnahmen wirken kaum. In zwei grossen Feldstudien mit 19’500 bzw. 14’773 Mitarbeitenden hatten Pflichtschulungen und Lernseiten nach einem Fehlklick keinen oder nur einen minimalen Effekt (Ho et al., 2025; Lain et al., 2022). ManpowerGroup suchte deshalb ein Format, an dem Mitarbeitende aktiv teilnehmen und das ihnen in Erinnerung bleibt.
 
-Unsere Lösung ist die Schulungswebseite *Inside the Mind of a Hacker*. Die Teilnehmenden wechseln kurz die Seite und denken wie ein Angreifer. In fünf Modulen zu den wichtigsten Risiken im Recruiting (Phishing, Schadsoftware in Bewerbungen, CEO-Fraud, Fake-Kandidaten und Deepfakes, Ransomware) sehen sie ein Expertenvideo, spielen eine Hacker-Mission und erfahren, welche Schutzmassnahme den Angriff gestoppt hätte. Danach wechseln die Rollen: Im Abwehr-Level trennen sie in einem Posteingang echte Angriffe von harmlosen Nachrichten. Gearbeitet wird in Zweierteams mit verteilten Informationen, sodass Angriffe nur gemeinsam erkannt werden. Die Leitplanke lautet: Gelernt wird der Mechanismus, nicht die Anleitung.
+Unsere Lösung ist die Schulungswebseite *Inside the Mind of a Hacker*. Die Teilnehmenden wechseln kurz die Seite und denken wie ein Angreifer. In fünf Modulen zu den wichtigsten Risiken im Recruiting (Phishing, Schadsoftware in Bewerbungen, CEO-Fraud, Fake-Kandidaten und Deepfakes, Ransomware) sehen sie ein Expertenvideo, spielen eine Hacker-Mission und erfahren, welche Schutzmassnahme den Angriff gestoppt hätte. Danach wechseln die Rollen: Im Abwehr-Level trennen sie in einem Posteingang echte Angriffe von harmlosen Nachrichten. Die Module werden in Zweierteams gespielt. In einem Workshop fügen danach 2–6 Personen ihre Hinweise zusammen, sodass Angriffe nur gemeinsam erkannt werden. Die Leitplanke lautet: Gelernt wird der Mechanismus, nicht die Anleitung.
 
 Der Ansatz stützt sich auf die Inokulationstheorie. Rollenspiele aus Angreifersicht verbesserten die Phishing-Erkennung in einer Studie um 36,7 %, während herkömmliche Trainings keinen Effekt zeigten (Wen et al., 2019). Der Lernerfolg wird mit einem Vorher-Nachher-Fragebogen gemessen, der parallele, gleich schwere Situationen ohne Lösungsanzeige enthält und zusätzlich die Selbstsicherheit erfasst. Ein funktionsfähiger Prototyp mit allen fünf Modulen ist online verfügbar.
 
@@ -115,7 +115,7 @@ Wir entschieden uns für *Inside the Mind of a Hacker*. \[Begründung durch das 
 
 Der Prototyp ist eine statische Webseite in HTML, CSS und JavaScript ohne Build-Schritt und ohne Server. Sie läuft in jedem Browser und ist über GitHub Pages öffentlich erreichbar (Anhang D). Alle Inhalte wie Module, Fragebogen und Abwehr-Posteingang liegen in separaten Datendateien. So lassen sie sich ohne Programmierkenntnisse anpassen. Ein automatisierter Browsertest spielt einen vollständigen Durchlauf und prüft die Sperren zwischen den Schritten sowie den Datenexport. Die Gestaltung folgt den Farben von ManpowerGroup, die Sprache ist gemäss Auftrag Englisch.
 
-Die kooperative Team-Mission wurde als separater Prototyp entwickelt, weil sie verteilte Informationen auf mehrere Geräte erfordert. Sie kommt ohne Server aus: Die Rolle ergibt sich aus Team und Sitzplatz.
+Die kooperative Team-Mission entstand zuerst als separater Prototyp mit drei Rollen und geschwärzten Informationen. Danach wurde sie zu einer Workshop-Runde für 2–6 Personen ausgebaut (Kapitel 3.5). Sie kommt ohne Server aus: Ein gemeinsamer Laptop zeigt den Teamtisch, jede Person ruft ihre Hinweiskarten per QR-Code auf dem eigenen Handy auf, und ein Abschlusscode überträgt das Ergebnis in die App jedes Teams.
 
 ### 2.6 Messdesign und Testkonzept
 
@@ -132,6 +132,30 @@ Damit der Vergleich sauber ist, gelten folgende Regeln:
 Am Ende jedes Durchlaufs exportiert die Testleitung die Antworten als CSV-Datei. Ein Skript führt alle Exporte zu einer Tabelle zusammen. Ausgewertet werden nur Durchläufe mit ausgefülltem Vorher- und Nachher-Fragebogen. Für den Vergleich der Paare eignet sich der Wilcoxon-Vorzeichen-Rang-Test mit Angabe der Effektstärke.
 
 Geplant sind \[Anzahl Testrunden und Testpersonen festlegen; Konzept: zwei Runden mit je 6–10 Personen, online und vor Ort\]. Neben den Fragebogen beobachten wir die Dauer pro Schritt, Abbrüche und Verständnisprobleme. Das vollständige Testkonzept findet sich in Anhang C.
+
+### 2.7 Zusammenarbeit und Arbeitsweise
+
+Das Team arbeitete iterativ: Ideen wurden rasch umgesetzt, im Team geprüft und in kleinen Schritten verbessert.
+
+**Werkzeuge und Ablage.** Kurze Absprachen liefen über einen Gruppenchat. Für die gemeinsame Ablage schlug das Team zunächst einen Ordner im Microsoft-Teams-Kanal vor, damit alle am selben Stand arbeiten. Am 22.10.2026 einigte es sich darauf, alle Projektdaten zusätzlich im GitHub-Repository abzulegen. Der Grund: Die KI-Assistenten der Teammitglieder können auf das Repository zugreifen, nicht aber auf den Teams-Ordner. Das Repository wurde damit zur zentralen Quelle für Prototyp, Präsentation und Dokumentation. Die Commit-Historie zeigt zudem nachvollziehbar, wer wann was beigetragen hat.
+
+**Einsatz von KI.** Das Team nutzte den KI-Assistenten Claude (Anthropic) als Werkzeug: für die Literaturrecherche, für das Ausarbeiten von Umsetzungsvorschlägen, beim Programmieren des Prototyps (in den Commits als Co-Autor vermerkt) und für einen ersten Entwurf dieses Berichts. Ein Beispiel für den Ablauf: Am 22.10.2026 übernahm das Team die Idee eines Schlüsselsystems von einer bestehenden Webseite. Die KI passte sie ans Narrativ an – pro Modul ein Schlüssel für eine durchschaute Schwachstelle, am Ende öffnen alle Schlüssel das «Tor zur Firma» und der Rollenwechsel beginnt. Ausserdem listete sie die nötigen Änderungen pro Datei auf. Das Team prüfte den Vorschlag, liess ihn umsetzen und testete das Ergebnis. Inhaltliche Entscheide, Quellenprüfung und Bewertung lagen beim Team. \[KI-Deklaration mit den Vorgaben des Betreuers abgleichen.\]
+
+**Entwicklung des Prototyps.** Tabelle 2-1 zeigt die wichtigsten Schritte aus der Versionsverwaltung.
+
+| Datum | Schritt | Beitrag |
+| --- | --- | --- |
+| 05.11.2026 | Team-Mission als Workshop-Runde für 2–6 Personen mit QR-Codes und Abschlusscode | Maniamic |
+| 03.11.2026 | Vorher-Nachher-Umfrage neu aufgebaut, App in Module aufgeteilt und neu gestaltet | Maniamic |
+| 03.11.2026 | Prototyp der kooperativen Team-Mission mit geschwärzten Informationen | larabng |
+| 28.10.2026 | Expertenvideo Modul 3 (CEO-Fraud) | Maniamic |
+| 26.10.2026 | Module 2, 4 und 5 fertiggestellt, Missionen, Abwehr-Level und Auswertung verbessert | Maniamic |
+| 23.10.2026 | Vorher-Umfrage mit 23 Fragen, anonymisiert | Daniele |
+| 22.10.2026 | Gamification (Punkte, Schlüssel, Company Gate, Badges, Hinweise, Streaks), Präsentation | larabng |
+| 22.10.2026 | Schulungswebseite mit Modul 1 und Phishing-Video, Übersetzung ins Englische | larabng |
+| 01.10.2026 | Repository angelegt | larabng |
+
+*Tabelle 2-1: Entwicklungsschritte des Prototyps (GitHub-Benutzernamen; Zuordnung zu Personen siehe Kapitel 9)*
 
 ## 3 Resultate
 
@@ -172,14 +196,15 @@ Die Schulung spielt in der fiktiven Personalvermittlung *TalentBridge Ltd*. Kern
 
 Zwei visuelle Welten tragen die Geschichte. Die Hacker-Missionen laufen in einer dunklen «Terminal»-Oberfläche. Umfragen, Abwehr-Level und Auswertung spielen in einer hellen Bürowelt. Der Wechsel der Welten markiert den Rollenwechsel vom Angreifer zur Verteidigerin.
 
-Der Ablauf besteht aus sechs Schritten:
+Der Ablauf besteht aus sieben Schritten:
 
 1. **Vorher-Umfrage** (ca. 10 Min.): anonyme Ausgangsmessung, Pflicht vor dem Start
 2. **Intro** (ca. 3 Min.): fiktive Firma, Rolle, Missionen und die beiden Balken; als Aufhänger der reale Fall ManpowerGroup Lansing
-3. **Module 1–5** (je 10–12 Min.): pro Schwachstelle Expertenvideo, Hacker-Mission und Auflösung. Jedes Modul bringt einen Schlüssel. Mit allen Schlüsseln öffnet sich das «Company Gate»
-4. **Abwehr-Level** (ca. 10 Min.): Rollenwechsel zur Mitarbeiterin bzw. zum Mitarbeiter
-5. **Nachher-Umfrage** (ca. 10 Min.): parallele Situationen und Feedback
-6. **Auswertung** (ca. 3 Min.): persönliches Ergebnis, verhinderter Schaden, Top-3-Teams, Badges
+3. **Module 1–5** (je 10–12 Min., in Zweierteams): pro Schwachstelle Expertenvideo, Hacker-Mission und Auflösung. Jedes Modul bringt einen Schlüssel. Mit allen Schlüsseln öffnet sich das «Company Gate»
+4. **Team-Mission im Workshop** (ca. 15 Min., 2–6 Personen): Das in den Modulen allein erworbene Wissen wird in der Gruppe zusammengeführt
+5. **Abwehr-Level** (ca. 10 Min.): Rollenwechsel zur Mitarbeiterin bzw. zum Mitarbeiter
+6. **Nachher-Umfrage** (ca. 10 Min.): parallele Situationen und Feedback
+7. **Auswertung** (ca. 3 Min.): persönliches Ergebnis, verhinderter Schaden, Top-3-Teams, Badges
 
 Am Stück dauert die Schulung 80 bis 90 Minuten. Empfohlen wird jedoch eine gestaffelte Durchführung (Kapitel 3.6).
 
@@ -223,7 +248,9 @@ Die Mechaniken setzen die Grundbedürfnisse der Selbstbestimmungstheorie um (Kap
 
 **Abwehr-Level.** Die Teilnehmenden bearbeiten einen Posteingang mit neun Nachrichten. Sechs davon sind Angriffe aus allen fünf Modulen, drei sind harmlos, etwa eine Einladung zum Mittagessen oder eine Wartungsankündigung. Nicht jede ungewöhnliche Nachricht ist ein Angriff. Für jede Nachricht stehen vier Handlungen zur Wahl: bearbeiten, über einen zweiten Kanal verifizieren, melden oder ablehnen. Bewertet wird die beste Handlung mit 2 Punkten, eine sichere, aber nicht optimale mit 1 Punkt und eine unsichere mit 0 Punkten.
 
-**Team-Mission.** Auf Wunsch des Betreuers fördert die Schulung die Zusammenarbeit. In der Team-Mission öffnen drei Personen auf ihren eigenen Geräten dieselbe verdächtige E-Mail («Action required: confirm your recruiter account»). Bei jeder Rolle sind andere Teile geschwärzt, und niemand erfährt, wer was sieht. Die Teamleitung sieht die E-Mail fast nur geschwärzt, kann aber den Konto- und IT-Kontext selbst prüfen. Nur sie darf entscheiden. Die beiden Mitglieder müssen ihr deshalb im Gespräch berichten, was sie sehen. Es gibt keine Checkliste: Das Team findet die Warnsignale selbst.
+**Team-Mission.** Auf Wunsch des Betreuers fördert die Schulung die Zusammenarbeit. Die Team-Mission folgt der Jigsaw-Methode: Wissen wird zuerst allein aufgebaut und dann in der Gruppe zusammengesetzt (Aronson et al., 1978). Im Workshop sitzen 2–6 Personen an einem Tisch, zum Beispiel zwei oder drei Zweierteams. Ein Laptop zeigt den Teamtisch mit einem QR-Code pro Person. Jede Person sieht auf ihrem Handy nur ihre eigenen Hinweiskarten, etwa die Absenderadresse oder den Link einer verdächtigen E-Mail, während andere Teile geschwärzt sind. Die Handys sind nicht verbunden: Die Gruppe kann die Hinweise nur im Gespräch kombinieren.
+
+In drei Runden (Phishing, CEO-Fraud, Fake-Kandidat) beantwortet die Gruppe je drei Fragen und trifft eine Entscheidung: bearbeiten, verifizieren, melden oder löschen. Die Auflösung zeigt, wer welche Karte hatte. Niemand kann allein antworten, unabhängig von der Gruppengrösse: Die Karten werden reihum verteilt, und jede Frage braucht zwei benachbarte Karten, die immer bei zwei verschiedenen Personen liegen. Die Antwortoptionen kombinieren je eine Tatsache von beiden Karten, sodass eine Karte allein mindestens zwei Optionen offenlässt. Damit bildet die Mission nach, dass Warnsignale im Alltag oft auf mehrere Personen verteilt sind. Am Ende zeigt der Tisch einen Abschlusscode mit acht Zeichen, den jedes Team in seiner App eingibt. Das Ergebnis zählt in die Punkte und öffnet den Abwehr-Level.
 
 **Leitplanken.** Die Schulung folgt dem Grundsatz «You learn the mechanism, not the instructions». Angriffe bestehen nur aus vorbereiteten Bausteinen in einer fiktiven Firma. Es gibt keine echten Werkzeuge und keine Vorlagen für Phishing-Mails. Die Rangliste belohnt Abwehr und Begründung, nicht die Beute. Sonst würde «wer am besten hackt, gewinnt» zum Lernziel. Öffentlich sind nur die drei besten Teams sichtbar, damit niemand blossgestellt wird.
 
@@ -231,7 +258,7 @@ Die Mechaniken setzen die Grundbedürfnisse der Selbstbestimmungstheorie um (Kap
 
 **Online:** Die Teilnehmenden spielen die Webseite im Browser, allein oder im Team. Es ist keine Installation nötig.
 
-**Vor Ort:** Die Schulung eignet sich auch als Kick-off an einem Standort. Anstelle der Videos präsentieren Fachpersonen ihr Thema live: IT-Sicherheit (Module 1 und 2), Finanzen (Modul 3), HR (Modul 4) und Datenschutz (Modul 5). Die Teams spielen die Missionen auf Laptops. Nach jeder Mission besprechen die Fachpersonen die Ergebnisse mit der Gruppe und ergänzen echte Fälle aus der Praxis. Die Balken aller Teams erscheinen auf einem gemeinsamen Bildschirm.
+**Vor Ort:** Die Schulung eignet sich auch als Kick-off an einem Standort. Anstelle der Videos präsentieren Fachpersonen ihr Thema live: IT-Sicherheit (Module 1 und 2), Finanzen (Modul 3), HR (Modul 4) und Datenschutz (Modul 5). Die Teams spielen die Missionen auf Laptops. Nach jeder Mission besprechen die Fachpersonen die Ergebnisse mit der Gruppe und ergänzen echte Fälle aus der Praxis. Die Balken aller Teams erscheinen auf einem gemeinsamen Bildschirm. Die Team-Mission ist für diese Situation gebaut: ein Laptop als Teamtisch, die Handys der Teilnehmenden für die Hinweiskarten.
 
 **Zeitlicher Ablauf:** Um dem Vergessen entgegenzuwirken (Reinheimer et al., 2020), wird die Schulung gestaffelt eingeführt:
 
@@ -259,7 +286,7 @@ Die Schulung soll bestehende Massnahmen nicht ersetzen, sondern ergänzen. Folge
 
 ### 3.8 Messgrössen (KPIs)
 
-Die Wirksamkeit wird mit sechs Kennzahlen gemessen. Zielwerte legen wir erst nach dem Pilot fest, weil eine Ausgangsbasis fehlt.
+Die Wirksamkeit wird mit sieben Kennzahlen gemessen. Zielwerte legen wir erst nach dem Pilot fest, weil eine Ausgangsbasis fehlt.
 
 | KPI | Messung | Kennzahl im Export |
 | --- | --- | --- |
@@ -267,8 +294,9 @@ Die Wirksamkeit wird mit sechs Kennzahlen gemessen. Zielwerte legen wir erst nac
 | Realistische Selbsteinschätzung | Abstand zwischen Selbstsicherheit und tatsächlicher Leistung | `calibration_*` (0 = gut kalibriert) |
 | Abwehrquote | Anteil korrekt erkannter und gemeldeter Angriffe im Abwehr-Level | `def_quality_*` |
 | Kein Übermelden | Harmlose Nachrichten werden weiterhin normal bearbeitet | `harmless_ok_*` (soll nicht sinken) |
+| Zusammenarbeit | Richtige Antworten und Entscheide der Gruppe in der Team-Mission; Einstellung «zuerst im Team besprechen» vorher und nachher | `team_*`, `discuss_first` |
 | Abschlussquote | Anteil der Teilnehmenden, die alle Schritte abschliessen | `modules_done`, `post_done` |
-| Motivation | Kurze Feedbackumfrage nach der Schulung (1–5) | `post_fb_*` |
+| Motivation | Kurze Feedbackumfrage nach der Schulung (1–5), inkl. Teamarbeit | `post_fb_*` |
 
 *Tabelle 3-5: KPIs zur Messung des Lernerfolgs*
 
@@ -281,12 +309,12 @@ Der Prototyp ist unter [larabng.github.io/securityawareness](https://larabng.git
 - Vorher- und Nachher-Umfrage mit gesperrter Reihenfolge
 - fünf spielbare Module mit Expertenvideos, Missionen und Auflösungen
 - Gamification mit Schlüsseln, Company Gate, Punkten, Badges, Hinweisen und Streaks
+- die Team-Mission als Workshop-Runde mit Teamtisch, QR-Codes, Hinweiskarten auf dem Handy und Abschlusscode
 - den Abwehr-Level mit neun Nachrichten
 - die persönliche Auswertung und eine Team-Rangliste mit den drei besten Teams
 - einen CSV-Export für die Testleitung sowie ein Skript, das alle Exporte zusammenführt
-- die Team-Mission als separaten Prototyp
 
-Der Fortschritt bleibt nur im Browser gespeichert. Es werden keine Daten an einen Server übertragen. Ein automatisierter Browsertest bestätigt, dass ein vollständiger Durchlauf mit allen Sperren und dem Export funktioniert. \[Screenshots als Abbildungen 3-1 bis 3-4 einfügen: Start, Hacker-Mission, Abwehr-Level, Auswertung.\]
+Der Fortschritt bleibt nur im Browser gespeichert, übersteht aber das Schliessen des Tabs zwischen Modulen und Workshop. Auf geteilten Laptops kann ein Durchlauf fortgesetzt oder neu gestartet werden. Es werden keine Daten an einen Server übertragen. Ein automatisierter Browsertest bestätigt, dass ein vollständiger Durchlauf mit allen Sperren und dem Export funktioniert. \[Screenshots als Abbildungen 3-1 bis 3-4 einfügen: Start, Hacker-Mission, Abwehr-Level, Auswertung.\]
 
 ### 3.10 Ergebnisse der Testphase
 
@@ -347,6 +375,7 @@ Die Angaben folgen APA 7 gemäss Zitierleitfaden des Studiengangs Wirtschaftsinf
 
 ### Wissenschaftliche Quellen
 
+- Aronson, E., Blaney, N., Stephan, C., Sikes, J., & Snapp, M. (1978). *The jigsaw classroom*. Sage.
 - Buo, S. A. (2020). *An application of cyberpsychology in business email compromise*. arXiv. https://arxiv.org/abs/2011.11112
 - Gwenhure, A. K., & Rahayu, F. S. (2024). Gamification of cybersecurity awareness for non-IT professionals: A systematic literature review. *International Journal of Serious Games, 11*(1). https://journal.seriousgamessociety.org/index.php/IJSG/article/view/719
 - Ho, G., Mirian, A., Luo, E., Tong, K., Lee, E., Liu, L., Longhurst, C. A., Dameff, C., Savage, S., & Voelker, G. M. (2025). Understanding the efficacy of phishing training in practice. In *2025 IEEE Symposium on Security and Privacy*. IEEE. https://sysnet.ucsd.edu/\~voelker/pubs/phishtrain-oakland25.pdf
@@ -396,9 +425,9 @@ Die Angaben folgen APA 7 gemäss Zitierleitfaden des Studiengangs Wirtschaftsinf
 
 | Mitglied | Rolle und Verantwortung |
 | --- | --- |
-| Michele \[Nachname\] | Grundkonzept «Cybersecurity Escape Room», \[ergänzen\] |
-| Daniele \[Nachname\] | \[ergänzen\] |
-| Lara Bangerter | Literaturrecherche, Konzept «Inside the Mind of a Hacker», Umsetzung des Prototyps und der Team-Mission, Projekttagebuch, \[ergänzen\] |
+| Michele \[Nachname\] | Grundkonzept «Cybersecurity Escape Room»; Vorschlag zur gemeinsamen Ablage; \[falls GitHub-Konto «Maniamic»: Module 2, 4 und 5, Expertenvideo Modul 3, Neuaufbau der Vorher-Nachher-Umfrage, Neugestaltung der App, Team-Mission als Workshop-Runde\] |
+| Daniele \[Nachname\] | Vorher-Umfrage mit 23 Fragen und deren Anonymisierung, \[ergänzen\] |
+| Lara Bangerter | Literaturrecherche, Konzept «Inside the Mind of a Hacker», erste Version der Schulungswebseite mit Modul 1, Gamification, Präsentation, Prototyp der Team-Mission, Projekttagebuch |
 
 ## 10 Anhang
 
