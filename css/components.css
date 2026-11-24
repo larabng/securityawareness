@@ -195,3 +195,33 @@
 .select:focus, .sv-input:focus { outline: none; border-color: var(--mp-blue); box-shadow: 0 0 0 4px var(--focus); }
 .dark .select { background: rgba(255, 255, 255, .06); border-color: var(--glass-line); color: #fff; }
 .dark .select option { color: var(--ink); }
+
+/* ---------- Demo mode toolbar (js/demo.js, only with ?demo) ---------- */
+.demo-bar {
+  position: fixed; left: 16px; bottom: 16px; z-index: 90; width: 232px;
+  background: var(--night-1); color: var(--on-dark); border: 1px solid var(--glass-line);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); font: 13px/1.35 var(--font);
+}
+.demo-head {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px;
+  background: none; border: 0; color: var(--mp-orange); font: 700 13px var(--font); cursor: pointer; text-align: left;
+}
+.demo-head .i { width: 16px; height: 16px; }
+.demo-bar.min { width: auto; }
+.demo-bar.min .demo-body { display: none; }
+.demo-body { padding: 0 12px 12px; }
+.demo-body p { margin: 0 0 6px; color: var(--on-dark-soft); }
+.demo-step, .demo-link {
+  display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 4px; padding: 7px 9px;
+  background: var(--glass-2); border: 1px solid var(--glass-line); border-radius: 8px;
+  color: var(--on-dark); font: 600 13px var(--font); cursor: pointer; text-align: left;
+}
+.demo-step .i, .demo-link .i { width: 15px; height: 15px; flex: none; }
+.demo-step:hover:not(:disabled), .demo-link:hover:not(:disabled) { border-color: var(--sky); }
+.demo-step.done { color: var(--on-dark-soft); cursor: default; }
+.demo-step.done .i { color: var(--mp-green); }
+.demo-link:disabled { opacity: .45; cursor: default; }
+.demo-row { display: flex; gap: 6px; margin-top: 6px; }
+.demo-row .demo-link { justify-content: center; margin: 0; }
+.demo-body small { display: block; margin-top: 8px; color: var(--on-dark-soft); font-size: 11px; }
+@media print { .demo-bar { display: none; } }

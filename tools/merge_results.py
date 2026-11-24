@@ -6,10 +6,11 @@ This script collects every imoah_*.csv in a folder and writes one wide CSV
 that opens directly in Excel / SPSS / R.
 
 Usage:
-    python3 tools/merge_results.py <folder-with-exports> [output.csv]
+    python3 tools/merge_results.py <folder-with-exports> [output.csv] [--include-demo]
 
 Duplicate exports of the same run (same run_id) are counted once – the
-latest export wins.
+latest export wins. Runs filled in demo mode (demo_run = 1) are left out
+unless --include-demo is given.
 """
 import csv
 import sys
@@ -25,17 +26,22 @@ def read_export(path):
 
 
 def main():
-    if len(sys.argv) < 2:
+    include_demo = "--include-demo" in sys.argv
+    args = [a for a in sys.argv[1:] if a != "--include-demo"]
+    if not args:
         sys.exit(__doc__)
-    folder = Path(sys.argv[1])
-    out = Path(sys.argv[2]) if len(sys.argv) > 2 else folder / "merged_results.csv"
+    folder = Path(args[0])
+    out = Path(args[1]) if len(args) > 1 else folder / "merged_results.csv"
 
-    runs, columns = {}, []
+    runs, columns, demo = {}, [], 0
     for path in sorted(folder.glob("imoah_*.csv")):
         try:
             data = read_export(path)
         except ValueError as e:
             print(f"skipped {path.name}: {e}")
+            continue
+        if data.get("demo_run") == "1" and not include_demo:
+            demo += 1
             continue
         for k in data:
             if k not in columns:
@@ -46,6 +52,8 @@ def main():
             runs[key] = data
         data["source_file"] = path.name
 
+    if demo:
+        print(f"left out {demo} demo export(s) (use --include-demo to keep them)")
     if not runs:
         sys.exit(f"no imoah_*.csv exports found in {folder}")
 

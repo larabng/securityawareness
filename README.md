@@ -79,6 +79,20 @@ localhost, so phones can reach them. The completion code carries group size, eve
 duration plus a checksum, so typos are caught (`js/core/team.js`). QR codes are drawn with qrcode-generator
 (Kazuhiko Arase, MIT licence, `js/vendor/qrcode.js`).
 
+## Demo mode (presentations and testing)
+
+Open the app with `?demo`, e.g. `https://larabng.github.io/securityawareness/?demo`. A toolbar at the bottom left
+fills the steps up to a chosen point with sample answers – pre-survey, all five modules, a team mission result,
+the defense level, the final survey – so you can jump straight to any part. Each button also completes the steps
+before it; **New run** starts over. The toolbar folds away after a jump (click **Demo mode** to open it again).
+
+Typical presentation setup: one window filled up to **All five modules** (team mission and defense still open to
+show live) and one filled up to **Final survey** (shows the evaluation). Without `?demo` in the address the toolbar
+is hidden, so you can present the prepared run without it.
+
+A run filled this way is marked as a demo: the export contains `demo_run = 1`, and `tools/merge_results.py` leaves
+demo runs out (add `--include-demo` to keep them). Participants never see the toolbar unless they use `?demo`.
+
 ## Structure
 
 Vanilla HTML/CSS/JS without a build step. Every script adds its part to one global `App` object;
@@ -99,6 +113,7 @@ js/core/measure.js    Survey model: items per run, scoring, summary measures
 js/core/team.js       Team mission logic: dealing the cards, seat links, completion code
 js/views/*.js         One file per screen (+ widgets.js for shared pieces)
 js/export.js          CSV export
+js/demo.js            Demo mode toolbar (only with ?demo)
 js/main.js            Navigation (App.go) and start-up
 js/team-page.js       Team mission page (table + phone view)
 js/vendor/qrcode.js   QR code generator (MIT)
@@ -161,7 +176,8 @@ is played per team of two – so one export describes a pair, not a single perso
    ```
    python3 tools/merge_results.py path/to/exports
    ```
-   This writes `merged_results.csv` into that folder (opens in Excel / SPSS / R).
+   This writes `merged_results.csv` into that folder (opens in Excel / SPSS / R). Demo runs (`demo_run = 1`)
+   are left out.
 
 Useful columns: `run_id`, `started_at`, `duration_min`, `form_order`, `modules_done`, the summary columns above,
 `pre_*` / `post_*` (every single answer; scenarios as `<pre|post>_sc_<slot>` + `_quality` + `_conf`),

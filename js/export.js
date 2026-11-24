@@ -73,6 +73,7 @@
     var now = new Date();
     var rows = [["field", "value"]];
     rows.push(["run_id", state.runId || ""]);
+    rows.push(["demo_run", state.demo ? "1" : "0"]);   // filled via ?demo (js/demo.js) – leave out of the evaluation
     rows.push(["app_version", App.APP_VERSION]);
     rows.push(["started_at", state.startedAt || ""]);
     rows.push(["exported_at", now.toISOString()]);

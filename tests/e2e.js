@@ -192,9 +192,40 @@ function check(name, ok, detail) {
   const expect = { score_pre: "4", score_post: "16", score_delta: "12", harmless_ok_pre: "2", harmless_ok_post: "2",
                    calibration_pre: "0.75", calibration_post: "-0.19", signs_score_post: "8", modules_done: "5", pre_done: "1", post_done: "1",
                    team_done: "1", team_size: "3", team_score: "14", team_questions_correct: "8", team_r1_q1: "0", team_r1_score: "4",
-                   delta_att_discuss_first: "2", post_fb_teamwork: "4" };
+                   delta_att_discuss_first: "2", post_fb_teamwork: "4", demo_run: "0" };
   Object.keys(expect).forEach(k => check("export " + k + " = " + expect[k], data[k] === expect[k], data[k]));
   check("export has a form order", /^(AB|BA)$/.test(data.form_order || ""), data.form_order);
+
+  console.log("Demo mode");
+  const ctx = await browser.createBrowserContext();
+  const demo = await ctx.newPage();
+  await demo.setViewport({ width: 1280, height: 900 });
+  demo.on("pageerror", e => errors.push(e.message));
+  demo.on("dialog", d => d.accept());
+  await demo.goto(BASE_URL + "/?t=" + Date.now(), { waitUntil: "networkidle0" });
+  check("no demo toolbar without ?demo", (await demo.$("#demoBar")) === null);
+  await demo.goto(BASE_URL + "/?demo", { waitUntil: "networkidle0" });
+  check("?demo shows the demo toolbar", (await demo.$("#demoBar")) !== null);
+  await demo.click('#demoBar [data-demo="1"]'); await sleep(200);
+  const st1 = await demo.evaluate(() => JSON.parse(localStorage.getItem("imoah")));
+  check("demo: filling up to the modules leaves the defense level open",
+        st1.preDone && Object.keys(st1.keys).length === 5 && !st1.teamMission && Object.keys(st1.defense).length === 0 &&
+        (await demo.$eval(".section.active", e => e.id)) === "modules");
+  check("demo: the toolbar folds away after a jump", await demo.$eval("#demoBar", e => e.classList.contains("min")));
+  await demo.click("#demoToggle"); await sleep(100);
+  await demo.click('#demoBar [data-demo="4"]'); await sleep(200);
+  check("demo: filling up to the final survey opens the evaluation", (await demo.$eval(".section.active", e => e.id)) === "result");
+  await demo.evaluate(() => {
+    const create = URL.createObjectURL;
+    URL.createObjectURL = b => { b.text().then(t => { window.__csv = t; }); return create(b); };
+    HTMLAnchorElement.prototype.click = function () {};
+  });
+  await demo.click("#expBtn"); await sleep(300);
+  const dcsv = await demo.evaluate(() => window.__csv || "");
+  const ddata = Object.fromEntries(dcsv.replace(/^﻿/, "").split("\n").slice(1).map(r => r.slice(1, -1).split('","')));
+  const dexpect = { demo_run: "1", pre_done: "1", post_done: "1", modules_done: "5", team_done: "1" };
+  Object.keys(dexpect).forEach(k => check("demo export " + k + " = " + dexpect[k], ddata[k] === dexpect[k], ddata[k]));
+  await ctx.close();
 
   check("no JavaScript errors", errors.length === 0, errors.join(" | "));
   await browser.close();

@@ -8,7 +8,7 @@
   "use strict";
   var C = window.CONTENT;
 
-  App.APP_VERSION = "2026-11-05";
+  App.APP_VERSION = "2026-11-25";
   App.DIFF_POINTS = { easy: 30, medium: 50, hard: 80 };
   App.DIFF_LABEL = { easy: "Easy", medium: "Medium", hard: "Hard" };
   App.ACTION_LABEL = { process: "Process", verify: "Verify (2nd channel)", report: "Report", reject: "Reject" };
