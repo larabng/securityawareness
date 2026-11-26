@@ -195,4 +195,4 @@ Only use runs with `pre_done = 1` and `post_done = 1` for the before/after compa
   (or **Reset** on the result page) – export first. Private/incognito windows forget the run when they are closed.
 - `duration_min` in the export counts from the start of the run, so it includes any break before the workshop.
 - Evaluation runs only via the CSV export; nothing is sent anywhere.
-- The meter values are fictional and only illustrate the order of magnitude.
+- The two meters (loot value / company damage) are a 0–100 % scale of how far the attacks got – no real prices or amounts.

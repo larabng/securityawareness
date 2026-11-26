@@ -32,7 +32,7 @@
       App.keysTotal() + ' to open the company gate</span></div><div class="kr-slots">' + slots + '</div></div>';
   };
 
-  // Loot value / company damage (fictional, order of magnitude only)
+  // Loot value / company damage: a 0–100 % scale of how far the attacks got (no amounts)
   App.metersHTML = function () {
     var loot = Math.min(100, state.loot), dmg = Math.min(100, state.damage);
     function meter(ic, label, pct, cls) {
@@ -40,9 +40,9 @@
         '<div class="meter-track"><div class="meter-fill ' + cls + '" style="width:' + pct + '%"></div></div></div>';
     }
     return '<div class="meters">' +
-      meter("coins", "Loot value (CyberCoins)", loot, "loot") +
-      meter("building-2", "Company damage (fictional CHF)", dmg, "damage") +
-      '<p class="note">The values are fictional and only illustrate the order of magnitude – not real market prices.</p></div>';
+      meter("coins", "Loot value", loot, "loot") +
+      meter("building-2", "Company damage", dmg, "damage") +
+      '<p class="note">How far the attacks got – the bars fill with every mission. Fictional, no real prices or amounts.</p></div>';
   };
 
   App.gateHTML = function (ic, title, text, btnLabel, goId) {
